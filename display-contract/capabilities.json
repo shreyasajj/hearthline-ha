@@ -1,0 +1,115 @@
+{
+  "protocol_version": "1.0",
+  "revision": "pixel-home-0.4",
+  "layouts": [
+    "compact",
+    "reading",
+    "search",
+    "steps",
+    "comparison"
+  ],
+  "blocks": [
+    "paragraph",
+    "bullets",
+    "steps",
+    "sources",
+    "table",
+    "status"
+  ],
+  "max_payload_bytes": 32768,
+  "max_blocks": 8,
+  "max_table_columns": 4,
+  "max_table_rows": 8,
+  "max_sources_per_block": 5,
+  "unsupported": [
+    "followups",
+    "html",
+    "javascript",
+    "images",
+    "video",
+    "web_search",
+    "wake_word",
+    "tts",
+    "device_actions",
+    "background_display",
+    "locked_display",
+    "turn_by_turn_navigation",
+    "location_tracking",
+    "offline_maps",
+    "template_device_controls",
+    "audio_ducking"
+  ],
+  "templates": {
+    "journey": {
+      "schema_version": 1,
+      "installed": true,
+      "interactions": [
+        "expand_details",
+        "dismiss",
+        "home"
+      ],
+      "max_geometry_points": 256
+    },
+    "weather": {
+      "schema_version": 1,
+      "installed": true,
+      "interactions": [
+        "expand_details",
+        "dismiss",
+        "home"
+      ],
+      "max_geometry_points": 0
+    },
+    "home_status": {
+      "schema_version": 1,
+      "installed": true,
+      "interactions": [
+        "expand_details",
+        "dismiss",
+        "home"
+      ],
+      "max_geometry_points": 0
+    }
+  },
+  "template_protocol_version": "1.1",
+  "template_intents": {
+    "journey": {
+      "required": [
+        "destination",
+        "mode"
+      ],
+      "optional": [],
+      "modes": [
+        "driving",
+        "walking",
+        "cycling"
+      ]
+    },
+    "weather": {
+      "required": [],
+      "optional": []
+    },
+    "home_status": {
+      "required": [],
+      "optional": []
+    }
+  },
+  "units": {
+    "duration": "seconds",
+    "distance": "meters",
+    "temperature": [
+      "\u00b0C",
+      "\u00b0F",
+      "K"
+    ],
+    "precipitation_probability": "percent"
+  },
+  "template_states": [
+    "loading",
+    "ready",
+    "partial",
+    "unavailable",
+    "error",
+    "clarification"
+  ]
+}

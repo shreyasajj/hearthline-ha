@@ -1,0 +1,57 @@
+{
+  "protocol_version": "1.1",
+  "response_id": "demo_home_status",
+  "title": "Sample",
+  "summary": "Demo data only — no live provider was contacted.",
+  "spoken_text": "Demo data only.",
+  "ttl_seconds": 120,
+  "layout": "home_status",
+  "template": {
+    "schema_version": 1,
+    "state": "ready",
+    "source": "DEMO · synthetic fixture",
+    "updated_at": "2026-11-15T14:00:00-06:00",
+    "stale_after_seconds": 3600,
+    "data": {
+      "scope": "6 configured demo entities · read-only reported state",
+      "items": [
+        {
+          "entity_id": "light.living",
+          "name": "Living room lights",
+          "state": "on",
+          "unit": null
+        },
+        {
+          "entity_id": "lock.front",
+          "name": "Front door",
+          "state": "locked",
+          "unit": null
+        },
+        {
+          "entity_id": "switch.kitchen",
+          "name": "Kitchen plug",
+          "state": "off",
+          "unit": null
+        },
+        {
+          "entity_id": "light.bedroom",
+          "name": "Bedroom light",
+          "state": "unavailable",
+          "unit": null
+        },
+        {
+          "entity_id": "binary_sensor.window",
+          "name": "Office window",
+          "state": "unknown",
+          "unit": null
+        },
+        {
+          "entity_id": "sensor.hall",
+          "name": "Hall sensor",
+          "state": "23",
+          "unit": null
+        }
+      ]
+    }
+  }
+}

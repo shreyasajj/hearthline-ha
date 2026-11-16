@@ -1,0 +1,16 @@
+{
+  "protocol_version": "1.0",
+  "response_id": "example-1",
+  "layout": "reading",
+  "title": "How a heat pump works",
+  "summary": "A heat pump moves heat between indoors and outdoors.",
+  "spoken_text": "A heat pump moves heat rather than generating it directly.",
+  "ttl_seconds": 60,
+  "blocks": [
+    {
+      "type": "paragraph",
+      "heading": "Heating and cooling",
+      "text": "In heating mode, refrigerant absorbs heat outdoors and releases it indoors. The cycle reverses for cooling."
+    }
+  ]
+}

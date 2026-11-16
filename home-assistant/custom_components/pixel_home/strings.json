@@ -1,0 +1,106 @@
+{
+  "services": {
+    "exchange": {
+      "name": "Exchange",
+      "description": "Tablet transport only; never expose exchange to an LLM.",
+      "fields": {
+        "display_id": {
+          "name": "Display id",
+          "description": "display id"
+        },
+        "session_id": {
+          "name": "Session id",
+          "description": "session id"
+        },
+        "capability_revision": {
+          "name": "Capability revision",
+          "description": "capability revision"
+        },
+        "locked": {
+          "name": "Locked",
+          "description": "locked"
+        },
+        "foreground": {
+          "name": "Foreground",
+          "description": "foreground"
+        },
+        "ack": {
+          "name": "Ack",
+          "description": "ack"
+        },
+        "current_screen": {
+          "name": "Current screen",
+          "description": "Current native app page; unknown if omitted."
+        }
+      }
+    },
+    "get_screen_context": {
+      "name": "Get screen context",
+      "description": "Pixel Home display action. Returns response data; see DISPLAY-SETUP.md.",
+      "fields": {
+        "display_id": {
+          "name": "Display id",
+          "description": "display id"
+        }
+      }
+    },
+    "present_response": {
+      "name": "Present response",
+      "description": "Pixel Home display action. Returns response data; see DISPLAY-SETUP.md.",
+      "fields": {
+        "display_id": {
+          "name": "Display id",
+          "description": "display id"
+        },
+        "session_id": {
+          "name": "Session id",
+          "description": "session id"
+        },
+        "capability_revision": {
+          "name": "Capability revision",
+          "description": "capability revision"
+        },
+        "request": {
+          "name": "Request",
+          "description": "request"
+        }
+      }
+    },
+    "get_response_status": {
+      "name": "Get response status",
+      "description": "Pixel Home display action. Returns response data; see DISPLAY-SETUP.md.",
+      "fields": {
+        "display_id": {
+          "name": "Display id",
+          "description": "display id"
+        },
+        "response_id": {
+          "name": "Response id",
+          "description": "response id"
+        },
+        "session_id": {
+          "name": "Session ID",
+          "description": "Session from current screen context."
+        }
+      }
+    },
+    "dismiss_response": {
+      "name": "Dismiss response",
+      "description": "Pixel Home display action. Returns response data; see DISPLAY-SETUP.md.",
+      "fields": {
+        "display_id": {
+          "name": "Display id",
+          "description": "display id"
+        },
+        "session_id": {
+          "name": "Session id",
+          "description": "session id"
+        },
+        "response_id": {
+          "name": "Response id",
+          "description": "response id"
+        }
+      }
+    }
+  }
+}

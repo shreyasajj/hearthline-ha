@@ -1,0 +1,106 @@
+exchange:
+  fields:
+    display_id:
+      required: true
+      selector:
+        text: {}
+    session_id:
+      required: true
+      selector:
+        text: {}
+    capability_revision:
+      required: true
+      selector:
+        text: {}
+    locked:
+      required: true
+      selector:
+        boolean: {}
+    foreground:
+      required: true
+      selector:
+        boolean: {}
+    current_screen:
+      required: false
+      selector:
+        text: {}
+    ack:
+      required: false
+      selector:
+        object: {}
+get_screen_context:
+  fields:
+    display_id:
+      required: true
+      selector:
+        text: {}
+present_response:
+  fields:
+    display_id:
+      required: true
+      selector:
+        text: {}
+    session_id:
+      required: true
+      selector:
+        text: {}
+    capability_revision:
+      required: true
+      selector:
+        text: {}
+    request:
+      required: true
+      selector:
+        object: {}
+get_response_status:
+  fields:
+    session_id:
+      required: true
+      selector:
+        text: {}
+    display_id:
+      required: true
+      selector:
+        text: {}
+    response_id:
+      required: true
+      selector:
+        text: {}
+dismiss_response:
+  fields:
+    display_id:
+      required: true
+      selector:
+        text: {}
+    session_id:
+      required: true
+      selector:
+        text: {}
+    response_id:
+      required: true
+      selector:
+        text: {}
+present_template:
+  name: Present native template
+  description: Fetch trusted data and show a native journey, weather or configured home summary. No device actions.
+  fields:
+    display_id:
+      required: true
+      selector:
+        text:
+    session_id:
+      required: true
+      selector:
+        text:
+    capability_revision:
+      required: true
+      selector:
+        text:
+    response_id:
+      required: true
+      selector:
+        text:
+    intent:
+      required: true
+      selector:
+        object:

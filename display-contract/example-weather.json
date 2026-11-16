@@ -1,0 +1,63 @@
+{
+  "protocol_version": "1.1",
+  "response_id": "demo_weather",
+  "title": "Sample",
+  "summary": "Demo data only — no live provider was contacted.",
+  "spoken_text": "Demo data only.",
+  "ttl_seconds": 120,
+  "layout": "weather",
+  "template": {
+    "schema_version": 1,
+    "state": "ready",
+    "source": "DEMO · synthetic fixture",
+    "updated_at": "2026-11-15T14:00:00-06:00",
+    "stale_after_seconds": 3600,
+    "data": {
+      "location": "Sample home",
+      "condition": "partlycloudy",
+      "temperature": 64,
+      "unit": "°F",
+      "high": 68,
+      "low": 49,
+      "precipitation_probability": null,
+      "hours": [
+        {
+          "at": "2026-11-15T15:00:00-06:00",
+          "temperature": 64,
+          "precipitation_probability": null,
+          "condition": "cloudy"
+        },
+        {
+          "at": "2026-11-15T16:00:00-06:00",
+          "temperature": 63,
+          "precipitation_probability": 20,
+          "condition": "cloudy"
+        },
+        {
+          "at": "2026-11-15T17:00:00-06:00",
+          "temperature": 62,
+          "precipitation_probability": 20,
+          "condition": "cloudy"
+        },
+        {
+          "at": "2026-11-15T18:00:00-06:00",
+          "temperature": 61,
+          "precipitation_probability": 20,
+          "condition": "cloudy"
+        },
+        {
+          "at": "2026-11-15T19:00:00-06:00",
+          "temperature": 60,
+          "precipitation_probability": 20,
+          "condition": "cloudy"
+        },
+        {
+          "at": "2026-11-15T20:00:00-06:00",
+          "temperature": 59,
+          "precipitation_probability": 20,
+          "condition": "cloudy"
+        }
+      ]
+    }
+  }
+}

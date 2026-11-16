@@ -1,0 +1,179 @@
+package com.sendspindroid.sendspin.transport
+
+/**
+ * Transport abstraction for SendSpin communication.
+ *
+ * This interface allows SendSpinClient to work with different transport mechanisms.
+ * The only implementation is [WebSocketTransport]: a direct WebSocket connection
+ * to a server on the local network.
+ *
+ * ## Transport Lifecycle
+ * ```
+ * [Created] -> connect() -> [Connecting] -> [Connected] -> close() -> [Closed]
+ *                              |              |
+ *                           [Failed]     [Disconnected]
+ * ```
+ */
+interface SendSpinTransport {
+
+    /**
+     * Current connection state of the transport.
+     */
+    val state: TransportState
+
+    /**
+     * Whether the transport is currently connected and can send messages.
+     */
+    val isConnected: Boolean
+        get() = state == TransportState.Connected
+
+    /**
+     * Initiate connection. This is asynchronous - results delivered via [Listener].
+     */
+    fun connect()
+
+    /**
+     * Send a text message (JSON protocol messages).
+     *
+     * @param text The message to send
+     * @return true if the message was queued for sending, false if transport unavailable
+     */
+    fun send(text: String): Boolean
+
+    /**
+     * Send binary data (audio chunks, artwork).
+     *
+     * @param bytes The binary data to send
+     * @return true if the data was queued for sending, false if transport unavailable
+     */
+    fun send(bytes: ByteArray): Boolean
+
+    /**
+     * [send], running [beforeWrite] as late as the transport can before the
+     * frame goes to the socket.
+     *
+     * Sending is queued, so the moment `send` is called is not the moment the
+     * frame leaves. A caller that needs the latter - the clock-sync round trip
+     * is measured from it - takes its timestamp in [beforeWrite].
+     */
+    fun send(bytes: ByteArray, beforeWrite: () -> Unit): Boolean {
+        beforeWrite()
+        return send(bytes)
+    }
+
+    /**
+     * Close the transport connection.
+     *
+     * @param code Close code (1000 = normal, others indicate errors)
+     * @param reason Human-readable close reason
+     */
+    fun close(code: Int = 1000, reason: String = "")
+
+    /**
+     * Close, but let already-queued frames reach the wire first.
+     *
+     * [send] only *queues*; [close] can then discard what it queued. That
+     * matters for exactly one kind of message: the last one. A `client/goodbye`
+     * that never lands leaves the server applying its no-goodbye heuristic -
+     * for a playback connection, "assume restart and reconnect" - which is the
+     * opposite of what every goodbye reason asks for.
+     *
+     * Defaults to [close] for transports that cannot distinguish the two.
+     *
+     * @param onFlushed called once, on any thread, when the queued frames
+     *   and the close have gone as far as this transport takes them: the
+     *   point after which ending the process loses nothing.
+     */
+    fun closeAfterFlush(code: Int = 1000, reason: String = "", onFlushed: () -> Unit = {}) {
+        close(code, reason)
+        onFlushed()
+    }
+
+    /**
+     * Release all resources associated with this transport.
+     * Should be called when the transport is no longer needed.
+     */
+    fun destroy()
+
+    /**
+     * Set the listener for transport events.
+     */
+    fun setListener(listener: Listener?)
+
+    /**
+     * Listener interface for transport events.
+     * All callbacks are delivered on the IO dispatcher, not the main thread.
+     */
+    interface Listener {
+        /**
+         * Called when the transport connection is established.
+         */
+        fun onConnected()
+
+        /**
+         * Called when the transport receives a text message, with the frame's
+         * exact bytes as they arrived. Only the cleartext handshake travels
+         * in text frames.
+         *
+         * The Noise prologue is "the concatenation of the exact bytes of
+         * `client/init` followed by the exact bytes of `server/init`, as
+         * transmitted on the wire", and both sides "MUST hash the raw message
+         * bytes exactly as sent and received, not a re-encoding of the parsed
+         * message" (`connection.md#prologue`). `text.encodeToByteArray()` is a
+         * re-encoding: it round-trips through Ktor's UTF-8 decoder and back,
+         * which is lossy for malformed input and is not the same operation the
+         * spec describes.
+         */
+        fun onMessage(text: String, rawUtf8: ByteArray)
+
+        /**
+         * Called when the transport receives binary data.
+         */
+        fun onMessage(bytes: ByteArray)
+
+        /**
+         * Called when the transport is closing (graceful shutdown).
+         *
+         * @param code Close code
+         * @param reason Close reason
+         */
+        fun onClosing(code: Int, reason: String)
+
+        /**
+         * Called once when the transport is fully closed, whether the remote
+         * end closed it or a local [close] did.
+         *
+         * @param code Close code
+         * @param reason Close reason
+         */
+        fun onClosed(code: Int, reason: String)
+
+        /**
+         * Called when the transport encounters an error.
+         *
+         * @param error The exception that caused the failure
+         * @param isRecoverable Whether the error might be temporary (network glitch vs. config error)
+         */
+        fun onFailure(error: Throwable, isRecoverable: Boolean)
+    }
+}
+
+/**
+ * Connection state for transports.
+ */
+enum class TransportState {
+    /** Initial state, not connected */
+    Disconnected,
+
+    /** Connection in progress */
+    Connecting,
+
+    /** Connected and ready to send/receive */
+    Connected,
+
+    /** Connection failed */
+    Failed,
+
+    /** Connection was closed (either by us or remote) */
+    Closed
+}

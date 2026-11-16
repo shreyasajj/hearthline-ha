@@ -1,0 +1,28 @@
+{
+  "protocol_version": "1.0",
+  "response_id": "example_comparison",
+  "layout": "comparison",
+  "title": "Display example",
+  "summary": "This is a sample of the comparison layout.",
+  "spoken_text": "A heat pump moves heat rather than generating it directly.",
+  "ttl_seconds": 60,
+  "blocks": [
+    {
+      "type": "table",
+      "columns": [
+        "Mode",
+        "Purpose"
+      ],
+      "rows": [
+        [
+          "Heat",
+          "Warm the room"
+        ],
+        [
+          "Cool",
+          "Cool the room"
+        ]
+      ]
+    }
+  ]
+}

@@ -1,0 +1,2214 @@
+[
+  {
+    "name": "journey ready",
+    "valid": true,
+    "request": {
+      "protocol_version": "1.1",
+      "response_id": "demo_journey",
+      "title": "Sample",
+      "summary": "Demo data only — no live provider was contacted.",
+      "spoken_text": "Demo data only.",
+      "ttl_seconds": 120,
+      "layout": "journey",
+      "template": {
+        "schema_version": 1,
+        "state": "ready",
+        "source": "DEMO · synthetic fixture",
+        "updated_at": "2026-11-15T14:00:00-06:00",
+        "stale_after_seconds": 3600,
+        "data": {
+          "destination": "Airport",
+          "locality": "Sample airport · Example City",
+          "duration_seconds": 1440,
+          "distance_meters": 19312,
+          "departure_at": "2026-11-15T14:00:00-06:00",
+          "timezone": "America/Chicago",
+          "traffic": "unavailable",
+          "directions": [
+            "Head toward the main road",
+            "Continue toward Airport Road",
+            "Follow signs to departures"
+          ],
+          "geometry": [],
+          "attribution": "Demo route · map imagery not configured"
+        }
+      }
+    }
+  },
+  {
+    "name": "journey loading",
+    "valid": true,
+    "request": {
+      "protocol_version": "1.1",
+      "response_id": "demo_journey",
+      "title": "Sample",
+      "summary": "Demo data only — no live provider was contacted.",
+      "spoken_text": "Demo data only.",
+      "ttl_seconds": 120,
+      "layout": "journey",
+      "template": {
+        "schema_version": 1,
+        "state": "loading",
+        "source": "DEMO · synthetic fixture",
+        "updated_at": "2026-11-15T14:00:00-06:00",
+        "stale_after_seconds": 3600,
+        "data": null
+      }
+    }
+  },
+  {
+    "name": "journey error",
+    "valid": true,
+    "request": {
+      "protocol_version": "1.1",
+      "response_id": "demo_journey",
+      "title": "Sample",
+      "summary": "Demo data only — no live provider was contacted.",
+      "spoken_text": "Demo data only.",
+      "ttl_seconds": 120,
+      "layout": "journey",
+      "template": {
+        "schema_version": 1,
+        "state": "error",
+        "source": "DEMO · synthetic fixture",
+        "updated_at": "2026-11-15T14:00:00-06:00",
+        "stale_after_seconds": 3600,
+        "data": null
+      }
+    }
+  },
+  {
+    "name": "journey unavailable",
+    "valid": true,
+    "request": {
+      "protocol_version": "1.1",
+      "response_id": "demo_journey",
+      "title": "Sample",
+      "summary": "Demo data only — no live provider was contacted.",
+      "spoken_text": "Demo data only.",
+      "ttl_seconds": 120,
+      "layout": "journey",
+      "template": {
+        "schema_version": 1,
+        "state": "unavailable",
+        "source": "DEMO · synthetic fixture",
+        "updated_at": "2026-11-15T14:00:00-06:00",
+        "stale_after_seconds": 3600,
+        "data": null
+      }
+    }
+  },
+  {
+    "name": "journey clarification",
+    "valid": true,
+    "request": {
+      "protocol_version": "1.1",
+      "response_id": "demo_journey",
+      "title": "Sample",
+      "summary": "Demo data only — no live provider was contacted.",
+      "spoken_text": "Demo data only.",
+      "ttl_seconds": 120,
+      "layout": "journey",
+      "template": {
+        "schema_version": 1,
+        "state": "clarification",
+        "source": "DEMO · synthetic fixture",
+        "updated_at": "2026-11-15T14:00:00-06:00",
+        "stale_after_seconds": 3600,
+        "data": null
+      }
+    }
+  },
+  {
+    "name": "weather ready",
+    "valid": true,
+    "request": {
+      "protocol_version": "1.1",
+      "response_id": "demo_weather",
+      "title": "Sample",
+      "summary": "Demo data only — no live provider was contacted.",
+      "spoken_text": "Demo data only.",
+      "ttl_seconds": 120,
+      "layout": "weather",
+      "template": {
+        "schema_version": 1,
+        "state": "ready",
+        "source": "DEMO · synthetic fixture",
+        "updated_at": "2026-11-15T14:00:00-06:00",
+        "stale_after_seconds": 3600,
+        "data": {
+          "location": "Sample home",
+          "condition": "partlycloudy",
+          "temperature": 64,
+          "unit": "°F",
+          "high": 68,
+          "low": 49,
+          "precipitation_probability": null,
+          "hours": [
+            {
+              "at": "2026-11-15T15:00:00-06:00",
+              "temperature": 64,
+              "precipitation_probability": null,
+              "condition": "cloudy"
+            },
+            {
+              "at": "2026-11-15T16:00:00-06:00",
+              "temperature": 63,
+              "precipitation_probability": 20,
+              "condition": "cloudy"
+            },
+            {
+              "at": "2026-11-15T17:00:00-06:00",
+              "temperature": 62,
+              "precipitation_probability": 20,
+              "condition": "cloudy"
+            },
+            {
+              "at": "2026-11-15T18:00:00-06:00",
+              "temperature": 61,
+              "precipitation_probability": 20,
+              "condition": "cloudy"
+            },
+            {
+              "at": "2026-11-15T19:00:00-06:00",
+              "temperature": 60,
+              "precipitation_probability": 20,
+              "condition": "cloudy"
+            },
+            {
+              "at": "2026-11-15T20:00:00-06:00",
+              "temperature": 59,
+              "precipitation_probability": 20,
+              "condition": "cloudy"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "weather loading",
+    "valid": true,
+    "request": {
+      "protocol_version": "1.1",
+      "response_id": "demo_weather",
+      "title": "Sample",
+      "summary": "Demo data only — no live provider was contacted.",
+      "spoken_text": "Demo data only.",
+      "ttl_seconds": 120,
+      "layout": "weather",
+      "template": {
+        "schema_version": 1,
+        "state": "loading",
+        "source": "DEMO · synthetic fixture",
+        "updated_at": "2026-11-15T14:00:00-06:00",
+        "stale_after_seconds": 3600,
+        "data": null
+      }
+    }
+  },
+  {
+    "name": "weather error",
+    "valid": true,
+    "request": {
+      "protocol_version": "1.1",
+      "response_id": "demo_weather",
+      "title": "Sample",
+      "summary": "Demo data only — no live provider was contacted.",
+      "spoken_text": "Demo data only.",
+      "ttl_seconds": 120,
+      "layout": "weather",
+      "template": {
+        "schema_version": 1,
+        "state": "error",
+        "source": "DEMO · synthetic fixture",
+        "updated_at": "2026-11-15T14:00:00-06:00",
+        "stale_after_seconds": 3600,
+        "data": null
+      }
+    }
+  },
+  {
+    "name": "weather unavailable",
+    "valid": true,
+    "request": {
+      "protocol_version": "1.1",
+      "response_id": "demo_weather",
+      "title": "Sample",
+      "summary": "Demo data only — no live provider was contacted.",
+      "spoken_text": "Demo data only.",
+      "ttl_seconds": 120,
+      "layout": "weather",
+      "template": {
+        "schema_version": 1,
+        "state": "unavailable",
+        "source": "DEMO · synthetic fixture",
+        "updated_at": "2026-11-15T14:00:00-06:00",
+        "stale_after_seconds": 3600,
+        "data": null
+      }
+    }
+  },
+  {
+    "name": "weather clarification",
+    "valid": true,
+    "request": {
+      "protocol_version": "1.1",
+      "response_id": "demo_weather",
+      "title": "Sample",
+      "summary": "Demo data only — no live provider was contacted.",
+      "spoken_text": "Demo data only.",
+      "ttl_seconds": 120,
+      "layout": "weather",
+      "template": {
+        "schema_version": 1,
+        "state": "clarification",
+        "source": "DEMO · synthetic fixture",
+        "updated_at": "2026-11-15T14:00:00-06:00",
+        "stale_after_seconds": 3600,
+        "data": null
+      }
+    }
+  },
+  {
+    "name": "home_status ready",
+    "valid": true,
+    "request": {
+      "protocol_version": "1.1",
+      "response_id": "demo_home_status",
+      "title": "Sample",
+      "summary": "Demo data only — no live provider was contacted.",
+      "spoken_text": "Demo data only.",
+      "ttl_seconds": 120,
+      "layout": "home_status",
+      "template": {
+        "schema_version": 1,
+        "state": "ready",
+        "source": "DEMO · synthetic fixture",
+        "updated_at": "2026-11-15T14:00:00-06:00",
+        "stale_after_seconds": 3600,
+        "data": {
+          "scope": "6 configured demo entities · read-only reported state",
+          "items": [
+            {
+              "entity_id": "light.living",
+              "name": "Living room lights",
+              "state": "on",
+              "unit": null
+            },
+            {
+              "entity_id": "lock.front",
+              "name": "Front door",
+              "state": "locked",
+              "unit": null
+            },
+            {
+              "entity_id": "switch.kitchen",
+              "name": "Kitchen plug",
+              "state": "off",
+              "unit": null
+            },
+            {
+              "entity_id": "light.bedroom",
+              "name": "Bedroom light",
+              "state": "unavailable",
+              "unit": null
+            },
+            {
+              "entity_id": "binary_sensor.window",
+              "name": "Office window",
+              "state": "unknown",
+              "unit": null
+            },
+            {
+              "entity_id": "sensor.hall",
+              "name": "Hall sensor",
+              "state": "23",
+              "unit": null
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "home_status loading",
+    "valid": true,
+    "request": {
+      "protocol_version": "1.1",
+      "response_id": "demo_home_status",
+      "title": "Sample",
+      "summary": "Demo data only — no live provider was contacted.",
+      "spoken_text": "Demo data only.",
+      "ttl_seconds": 120,
+      "layout": "home_status",
+      "template": {
+        "schema_version": 1,
+        "state": "loading",
+        "source": "DEMO · synthetic fixture",
+        "updated_at": "2026-11-15T14:00:00-06:00",
+        "stale_after_seconds": 3600,
+        "data": null
+      }
+    }
+  },
+  {
+    "name": "home_status error",
+    "valid": true,
+    "request": {
+      "protocol_version": "1.1",
+      "response_id": "demo_home_status",
+      "title": "Sample",
+      "summary": "Demo data only — no live provider was contacted.",
+      "spoken_text": "Demo data only.",
+      "ttl_seconds": 120,
+      "layout": "home_status",
+      "template": {
+        "schema_version": 1,
+        "state": "error",
+        "source": "DEMO · synthetic fixture",
+        "updated_at": "2026-11-15T14:00:00-06:00",
+        "stale_after_seconds": 3600,
+        "data": null
+      }
+    }
+  },
+  {
+    "name": "home_status unavailable",
+    "valid": true,
+    "request": {
+      "protocol_version": "1.1",
+      "response_id": "demo_home_status",
+      "title": "Sample",
+      "summary": "Demo data only — no live provider was contacted.",
+      "spoken_text": "Demo data only.",
+      "ttl_seconds": 120,
+      "layout": "home_status",
+      "template": {
+        "schema_version": 1,
+        "state": "unavailable",
+        "source": "DEMO · synthetic fixture",
+        "updated_at": "2026-11-15T14:00:00-06:00",
+        "stale_after_seconds": 3600,
+        "data": null
+      }
+    }
+  },
+  {
+    "name": "home_status clarification",
+    "valid": true,
+    "request": {
+      "protocol_version": "1.1",
+      "response_id": "demo_home_status",
+      "title": "Sample",
+      "summary": "Demo data only — no live provider was contacted.",
+      "spoken_text": "Demo data only.",
+      "ttl_seconds": 120,
+      "layout": "home_status",
+      "template": {
+        "schema_version": 1,
+        "state": "clarification",
+        "source": "DEMO · synthetic fixture",
+        "updated_at": "2026-11-15T14:00:00-06:00",
+        "stale_after_seconds": 3600,
+        "data": null
+      }
+    }
+  },
+  {
+    "name": "fake traffic",
+    "valid": false,
+    "request": {
+      "protocol_version": "1.1",
+      "response_id": "demo_journey",
+      "title": "Sample",
+      "summary": "Demo data only — no live provider was contacted.",
+      "spoken_text": "Demo data only.",
+      "ttl_seconds": 120,
+      "layout": "journey",
+      "template": {
+        "schema_version": 1,
+        "state": "ready",
+        "source": "DEMO · synthetic fixture",
+        "updated_at": "2026-11-15T14:00:00-06:00",
+        "stale_after_seconds": 3600,
+        "data": {
+          "destination": "Airport",
+          "locality": "Sample airport · Example City",
+          "duration_seconds": 1440,
+          "distance_meters": 19312,
+          "departure_at": "2026-11-15T14:00:00-06:00",
+          "timezone": "America/Chicago",
+          "traffic": "heavy",
+          "directions": [
+            "Head toward the main road",
+            "Continue toward Airport Road",
+            "Follow signs to departures"
+          ],
+          "geometry": [],
+          "attribution": "Demo route · map imagery not configured"
+        }
+      }
+    }
+  },
+  {
+    "name": "negative duration",
+    "valid": false,
+    "request": {
+      "protocol_version": "1.1",
+      "response_id": "demo_journey",
+      "title": "Sample",
+      "summary": "Demo data only — no live provider was contacted.",
+      "spoken_text": "Demo data only.",
+      "ttl_seconds": 120,
+      "layout": "journey",
+      "template": {
+        "schema_version": 1,
+        "state": "ready",
+        "source": "DEMO · synthetic fixture",
+        "updated_at": "2026-11-15T14:00:00-06:00",
+        "stale_after_seconds": 3600,
+        "data": {
+          "destination": "Airport",
+          "locality": "Sample airport · Example City",
+          "duration_seconds": -1,
+          "distance_meters": 19312,
+          "departure_at": "2026-11-15T14:00:00-06:00",
+          "timezone": "America/Chicago",
+          "traffic": "unavailable",
+          "directions": [
+            "Head toward the main road",
+            "Continue toward Airport Road",
+            "Follow signs to departures"
+          ],
+          "geometry": [],
+          "attribution": "Demo route · map imagery not configured"
+        }
+      }
+    }
+  },
+  {
+    "name": "excess geometry",
+    "valid": false,
+    "request": {
+      "protocol_version": "1.1",
+      "response_id": "demo_journey",
+      "title": "Sample",
+      "summary": "Demo data only — no live provider was contacted.",
+      "spoken_text": "Demo data only.",
+      "ttl_seconds": 120,
+      "layout": "journey",
+      "template": {
+        "schema_version": 1,
+        "state": "ready",
+        "source": "DEMO · synthetic fixture",
+        "updated_at": "2026-11-15T14:00:00-06:00",
+        "stale_after_seconds": 3600,
+        "data": {
+          "destination": "Airport",
+          "locality": "Sample airport · Example City",
+          "duration_seconds": 1440,
+          "distance_meters": 19312,
+          "departure_at": "2026-11-15T14:00:00-06:00",
+          "timezone": "America/Chicago",
+          "traffic": "unavailable",
+          "directions": [
+            "Head toward the main road",
+            "Continue toward Airport Road",
+            "Follow signs to departures"
+          ],
+          "geometry": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "attribution": "Demo route · map imagery not configured"
+        }
+      }
+    }
+  },
+  {
+    "name": "invalid coordinate",
+    "valid": false,
+    "request": {
+      "protocol_version": "1.1",
+      "response_id": "demo_journey",
+      "title": "Sample",
+      "summary": "Demo data only — no live provider was contacted.",
+      "spoken_text": "Demo data only.",
+      "ttl_seconds": 120,
+      "layout": "journey",
+      "template": {
+        "schema_version": 1,
+        "state": "ready",
+        "source": "DEMO · synthetic fixture",
+        "updated_at": "2026-11-15T14:00:00-06:00",
+        "stale_after_seconds": 3600,
+        "data": {
+          "destination": "Airport",
+          "locality": "Sample airport · Example City",
+          "duration_seconds": 1440,
+          "distance_meters": 19312,
+          "departure_at": "2026-11-15T14:00:00-06:00",
+          "timezone": "America/Chicago",
+          "traffic": "unavailable",
+          "directions": [
+            "Head toward the main road",
+            "Continue toward Airport Road",
+            "Follow signs to departures"
+          ],
+          "geometry": [
+            [
+              200,
+              10
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "attribution": "Demo route · map imagery not configured"
+        }
+      }
+    }
+  },
+  {
+    "name": "single point route",
+    "valid": false,
+    "request": {
+      "protocol_version": "1.1",
+      "response_id": "demo_journey",
+      "title": "Sample",
+      "summary": "Demo data only — no live provider was contacted.",
+      "spoken_text": "Demo data only.",
+      "ttl_seconds": 120,
+      "layout": "journey",
+      "template": {
+        "schema_version": 1,
+        "state": "ready",
+        "source": "DEMO · synthetic fixture",
+        "updated_at": "2026-11-15T14:00:00-06:00",
+        "stale_after_seconds": 3600,
+        "data": {
+          "destination": "Airport",
+          "locality": "Sample airport · Example City",
+          "duration_seconds": 1440,
+          "distance_meters": 19312,
+          "departure_at": "2026-11-15T14:00:00-06:00",
+          "timezone": "America/Chicago",
+          "traffic": "unavailable",
+          "directions": [
+            "Head toward the main road",
+            "Continue toward Airport Road",
+            "Follow signs to departures"
+          ],
+          "geometry": [
+            [
+              0,
+              0
+            ]
+          ],
+          "attribution": "Demo route · map imagery not configured"
+        }
+      }
+    }
+  },
+  {
+    "name": "remote result URL",
+    "valid": false,
+    "request": {
+      "protocol_version": "1.1",
+      "response_id": "demo_journey",
+      "title": "Sample",
+      "summary": "Demo data only — no live provider was contacted.",
+      "spoken_text": "Demo data only.",
+      "ttl_seconds": 120,
+      "layout": "journey",
+      "template": {
+        "schema_version": 1,
+        "state": "ready",
+        "source": "DEMO · synthetic fixture",
+        "updated_at": "2026-11-15T14:00:00-06:00",
+        "stale_after_seconds": 3600,
+        "data": {
+          "destination": "Airport",
+          "locality": "Sample airport · Example City",
+          "duration_seconds": 1440,
+          "distance_meters": 19312,
+          "departure_at": "2026-11-15T14:00:00-06:00",
+          "timezone": "America/Chicago",
+          "traffic": "unavailable",
+          "directions": [
+            "Head toward the main road",
+            "Continue toward Airport Road",
+            "Follow signs to departures"
+          ],
+          "geometry": [],
+          "attribution": "Demo route · map imagery not configured"
+        },
+        "result_url": "https://example.com/data"
+      }
+    }
+  },
+  {
+    "name": "forecast cap",
+    "valid": false,
+    "request": {
+      "protocol_version": "1.1",
+      "response_id": "demo_weather",
+      "title": "Sample",
+      "summary": "Demo data only — no live provider was contacted.",
+      "spoken_text": "Demo data only.",
+      "ttl_seconds": 120,
+      "layout": "weather",
+      "template": {
+        "schema_version": 1,
+        "state": "ready",
+        "source": "DEMO · synthetic fixture",
+        "updated_at": "2026-11-15T14:00:00-06:00",
+        "stale_after_seconds": 3600,
+        "data": {
+          "location": "Sample home",
+          "condition": "partlycloudy",
+          "temperature": 64,
+          "unit": "°F",
+          "high": 68,
+          "low": 49,
+          "precipitation_probability": null,
+          "hours": [
+            {
+              "at": "2026-11-15T15:00:00-06:00",
+              "temperature": 64,
+              "precipitation_probability": null,
+              "condition": "cloudy"
+            },
+            {
+              "at": "2026-11-15T16:00:00-06:00",
+              "temperature": 63,
+              "precipitation_probability": 20,
+              "condition": "cloudy"
+            },
+            {
+              "at": "2026-11-15T17:00:00-06:00",
+              "temperature": 62,
+              "precipitation_probability": 20,
+              "condition": "cloudy"
+            },
+            {
+              "at": "2026-11-15T18:00:00-06:00",
+              "temperature": 61,
+              "precipitation_probability": 20,
+              "condition": "cloudy"
+            },
+            {
+              "at": "2026-11-15T19:00:00-06:00",
+              "temperature": 60,
+              "precipitation_probability": 20,
+              "condition": "cloudy"
+            },
+            {
+              "at": "2026-11-15T20:00:00-06:00",
+              "temperature": 59,
+              "precipitation_probability": 20,
+              "condition": "cloudy"
+            },
+            {
+              "at": "2026-11-15T15:00:00-06:00",
+              "temperature": 64,
+              "precipitation_probability": null,
+              "condition": "cloudy"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "bad precipitation",
+    "valid": false,
+    "request": {
+      "protocol_version": "1.1",
+      "response_id": "demo_weather",
+      "title": "Sample",
+      "summary": "Demo data only — no live provider was contacted.",
+      "spoken_text": "Demo data only.",
+      "ttl_seconds": 120,
+      "layout": "weather",
+      "template": {
+        "schema_version": 1,
+        "state": "ready",
+        "source": "DEMO · synthetic fixture",
+        "updated_at": "2026-11-15T14:00:00-06:00",
+        "stale_after_seconds": 3600,
+        "data": {
+          "location": "Sample home",
+          "condition": "partlycloudy",
+          "temperature": 64,
+          "unit": "°F",
+          "high": 68,
+          "low": 49,
+          "precipitation_probability": -1,
+          "hours": [
+            {
+              "at": "2026-11-15T15:00:00-06:00",
+              "temperature": 64,
+              "precipitation_probability": null,
+              "condition": "cloudy"
+            },
+            {
+              "at": "2026-11-15T16:00:00-06:00",
+              "temperature": 63,
+              "precipitation_probability": 20,
+              "condition": "cloudy"
+            },
+            {
+              "at": "2026-11-15T17:00:00-06:00",
+              "temperature": 62,
+              "precipitation_probability": 20,
+              "condition": "cloudy"
+            },
+            {
+              "at": "2026-11-15T18:00:00-06:00",
+              "temperature": 61,
+              "precipitation_probability": 20,
+              "condition": "cloudy"
+            },
+            {
+              "at": "2026-11-15T19:00:00-06:00",
+              "temperature": 60,
+              "precipitation_probability": 20,
+              "condition": "cloudy"
+            },
+            {
+              "at": "2026-11-15T20:00:00-06:00",
+              "temperature": 59,
+              "precipitation_probability": 20,
+              "condition": "cloudy"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "ambiguous unit",
+    "valid": false,
+    "request": {
+      "protocol_version": "1.1",
+      "response_id": "demo_weather",
+      "title": "Sample",
+      "summary": "Demo data only — no live provider was contacted.",
+      "spoken_text": "Demo data only.",
+      "ttl_seconds": 120,
+      "layout": "weather",
+      "template": {
+        "schema_version": 1,
+        "state": "ready",
+        "source": "DEMO · synthetic fixture",
+        "updated_at": "2026-11-15T14:00:00-06:00",
+        "stale_after_seconds": 3600,
+        "data": {
+          "location": "Sample home",
+          "condition": "partlycloudy",
+          "temperature": 64,
+          "unit": "C",
+          "high": 68,
+          "low": 49,
+          "precipitation_probability": null,
+          "hours": [
+            {
+              "at": "2026-11-15T15:00:00-06:00",
+              "temperature": 64,
+              "precipitation_probability": null,
+              "condition": "cloudy"
+            },
+            {
+              "at": "2026-11-15T16:00:00-06:00",
+              "temperature": 63,
+              "precipitation_probability": 20,
+              "condition": "cloudy"
+            },
+            {
+              "at": "2026-11-15T17:00:00-06:00",
+              "temperature": 62,
+              "precipitation_probability": 20,
+              "condition": "cloudy"
+            },
+            {
+              "at": "2026-11-15T18:00:00-06:00",
+              "temperature": 61,
+              "precipitation_probability": 20,
+              "condition": "cloudy"
+            },
+            {
+              "at": "2026-11-15T19:00:00-06:00",
+              "temperature": 60,
+              "precipitation_probability": 20,
+              "condition": "cloudy"
+            },
+            {
+              "at": "2026-11-15T20:00:00-06:00",
+              "temperature": 59,
+              "precipitation_probability": 20,
+              "condition": "cloudy"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "version mismatch",
+    "valid": false,
+    "request": {
+      "protocol_version": "1.1",
+      "response_id": "demo_weather",
+      "title": "Sample",
+      "summary": "Demo data only — no live provider was contacted.",
+      "spoken_text": "Demo data only.",
+      "ttl_seconds": 120,
+      "layout": "weather",
+      "template": {
+        "schema_version": 2,
+        "state": "ready",
+        "source": "DEMO · synthetic fixture",
+        "updated_at": "2026-11-15T14:00:00-06:00",
+        "stale_after_seconds": 3600,
+        "data": {
+          "location": "Sample home",
+          "condition": "partlycloudy",
+          "temperature": 64,
+          "unit": "°F",
+          "high": 68,
+          "low": 49,
+          "precipitation_probability": null,
+          "hours": [
+            {
+              "at": "2026-11-15T15:00:00-06:00",
+              "temperature": 64,
+              "precipitation_probability": null,
+              "condition": "cloudy"
+            },
+            {
+              "at": "2026-11-15T16:00:00-06:00",
+              "temperature": 63,
+              "precipitation_probability": 20,
+              "condition": "cloudy"
+            },
+            {
+              "at": "2026-11-15T17:00:00-06:00",
+              "temperature": 62,
+              "precipitation_probability": 20,
+              "condition": "cloudy"
+            },
+            {
+              "at": "2026-11-15T18:00:00-06:00",
+              "temperature": 61,
+              "precipitation_probability": 20,
+              "condition": "cloudy"
+            },
+            {
+              "at": "2026-11-15T19:00:00-06:00",
+              "temperature": 60,
+              "precipitation_probability": 20,
+              "condition": "cloudy"
+            },
+            {
+              "at": "2026-11-15T20:00:00-06:00",
+              "temperature": 59,
+              "precipitation_probability": 20,
+              "condition": "cloudy"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "missing timestamp zone",
+    "valid": false,
+    "request": {
+      "protocol_version": "1.1",
+      "response_id": "demo_weather",
+      "title": "Sample",
+      "summary": "Demo data only — no live provider was contacted.",
+      "spoken_text": "Demo data only.",
+      "ttl_seconds": 120,
+      "layout": "weather",
+      "template": {
+        "schema_version": 1,
+        "state": "ready",
+        "source": "DEMO · synthetic fixture",
+        "updated_at": "2026-11-15T12:00:00",
+        "stale_after_seconds": 3600,
+        "data": {
+          "location": "Sample home",
+          "condition": "partlycloudy",
+          "temperature": 64,
+          "unit": "°F",
+          "high": 68,
+          "low": 49,
+          "precipitation_probability": null,
+          "hours": [
+            {
+              "at": "2026-11-15T15:00:00-06:00",
+              "temperature": 64,
+              "precipitation_probability": null,
+              "condition": "cloudy"
+            },
+            {
+              "at": "2026-11-15T16:00:00-06:00",
+              "temperature": 63,
+              "precipitation_probability": 20,
+              "condition": "cloudy"
+            },
+            {
+              "at": "2026-11-15T17:00:00-06:00",
+              "temperature": 62,
+              "precipitation_probability": 20,
+              "condition": "cloudy"
+            },
+            {
+              "at": "2026-11-15T18:00:00-06:00",
+              "temperature": 61,
+              "precipitation_probability": 20,
+              "condition": "cloudy"
+            },
+            {
+              "at": "2026-11-15T19:00:00-06:00",
+              "temperature": 60,
+              "precipitation_probability": 20,
+              "condition": "cloudy"
+            },
+            {
+              "at": "2026-11-15T20:00:00-06:00",
+              "temperature": 59,
+              "precipitation_probability": 20,
+              "condition": "cloudy"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "ready without data",
+    "valid": false,
+    "request": {
+      "protocol_version": "1.1",
+      "response_id": "demo_weather",
+      "title": "Sample",
+      "summary": "Demo data only — no live provider was contacted.",
+      "spoken_text": "Demo data only.",
+      "ttl_seconds": 120,
+      "layout": "weather",
+      "template": {
+        "schema_version": 1,
+        "state": "ready",
+        "source": "DEMO · synthetic fixture",
+        "updated_at": "2026-11-15T14:00:00-06:00",
+        "stale_after_seconds": 3600,
+        "data": null
+      }
+    }
+  },
+  {
+    "name": "arbitrary service",
+    "valid": false,
+    "request": {
+      "protocol_version": "1.1",
+      "response_id": "demo_home_status",
+      "title": "Sample",
+      "summary": "Demo data only — no live provider was contacted.",
+      "spoken_text": "Demo data only.",
+      "ttl_seconds": 120,
+      "layout": "home_status",
+      "template": {
+        "schema_version": 1,
+        "state": "ready",
+        "source": "DEMO · synthetic fixture",
+        "updated_at": "2026-11-15T14:00:00-06:00",
+        "stale_after_seconds": 3600,
+        "data": {
+          "scope": "6 configured demo entities · read-only reported state",
+          "items": [
+            {
+              "entity_id": "light.living",
+              "name": "Living room lights",
+              "state": "on",
+              "unit": null,
+              "service": "unlock"
+            },
+            {
+              "entity_id": "lock.front",
+              "name": "Front door",
+              "state": "locked",
+              "unit": null
+            },
+            {
+              "entity_id": "switch.kitchen",
+              "name": "Kitchen plug",
+              "state": "off",
+              "unit": null
+            },
+            {
+              "entity_id": "light.bedroom",
+              "name": "Bedroom light",
+              "state": "unavailable",
+              "unit": null
+            },
+            {
+              "entity_id": "binary_sensor.window",
+              "name": "Office window",
+              "state": "unknown",
+              "unit": null
+            },
+            {
+              "entity_id": "sensor.hall",
+              "name": "Hall sensor",
+              "state": "23",
+              "unit": null
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "duplicate entity",
+    "valid": false,
+    "request": {
+      "protocol_version": "1.1",
+      "response_id": "demo_home_status",
+      "title": "Sample",
+      "summary": "Demo data only — no live provider was contacted.",
+      "spoken_text": "Demo data only.",
+      "ttl_seconds": 120,
+      "layout": "home_status",
+      "template": {
+        "schema_version": 1,
+        "state": "ready",
+        "source": "DEMO · synthetic fixture",
+        "updated_at": "2026-11-15T14:00:00-06:00",
+        "stale_after_seconds": 3600,
+        "data": {
+          "scope": "6 configured demo entities · read-only reported state",
+          "items": [
+            {
+              "entity_id": "light.living",
+              "name": "Living room lights",
+              "state": "on",
+              "unit": null
+            },
+            {
+              "entity_id": "lock.front",
+              "name": "Front door",
+              "state": "locked",
+              "unit": null
+            },
+            {
+              "entity_id": "switch.kitchen",
+              "name": "Kitchen plug",
+              "state": "off",
+              "unit": null
+            },
+            {
+              "entity_id": "light.bedroom",
+              "name": "Bedroom light",
+              "state": "unavailable",
+              "unit": null
+            },
+            {
+              "entity_id": "binary_sensor.window",
+              "name": "Office window",
+              "state": "unknown",
+              "unit": null
+            },
+            {
+              "entity_id": "sensor.hall",
+              "name": "Hall sensor",
+              "state": "23",
+              "unit": null
+            },
+            {
+              "entity_id": "light.living",
+              "name": "Living room lights",
+              "state": "on",
+              "unit": null
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "bounded route",
+    "valid": true,
+    "request": {
+      "protocol_version": "1.1",
+      "response_id": "demo_journey",
+      "title": "Sample",
+      "summary": "Demo data only — no live provider was contacted.",
+      "spoken_text": "Demo data only.",
+      "ttl_seconds": 120,
+      "layout": "journey",
+      "template": {
+        "schema_version": 1,
+        "state": "ready",
+        "source": "DEMO · synthetic fixture",
+        "updated_at": "2026-11-15T14:00:00-06:00",
+        "stale_after_seconds": 3600,
+        "data": {
+          "destination": "Airport",
+          "locality": "Sample airport · Example City",
+          "duration_seconds": 1440,
+          "distance_meters": 19312,
+          "departure_at": "2026-11-15T14:00:00-06:00",
+          "timezone": "America/Chicago",
+          "traffic": "unavailable",
+          "directions": [
+            "Head toward the main road",
+            "Continue toward Airport Road",
+            "Follow signs to departures"
+          ],
+          "geometry": [
+            [
+              -87.7,
+              41.9
+            ],
+            [
+              -87.65,
+              41.95
+            ]
+          ],
+          "attribution": "Demo route · map imagery not configured"
+        }
+      }
+    }
+  }
+]

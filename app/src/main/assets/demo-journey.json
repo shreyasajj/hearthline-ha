@@ -1,0 +1,32 @@
+{
+  "protocol_version": "1.1",
+  "response_id": "demo_journey",
+  "title": "Sample",
+  "summary": "Demo data only — no live provider was contacted.",
+  "spoken_text": "Demo data only.",
+  "ttl_seconds": 120,
+  "layout": "journey",
+  "template": {
+    "schema_version": 1,
+    "state": "ready",
+    "source": "DEMO · synthetic fixture",
+    "updated_at": "2026-11-15T14:00:00-06:00",
+    "stale_after_seconds": 3600,
+    "data": {
+      "destination": "Airport",
+      "locality": "Sample airport · Example City",
+      "duration_seconds": 1440,
+      "distance_meters": 19312,
+      "departure_at": "2026-11-15T14:00:00-06:00",
+      "timezone": "America/Chicago",
+      "traffic": "unavailable",
+      "directions": [
+        "Head toward the main road",
+        "Continue toward Airport Road",
+        "Follow signs to departures"
+      ],
+      "geometry": [],
+      "attribution": "Demo route · map imagery not configured"
+    }
+  }
+}

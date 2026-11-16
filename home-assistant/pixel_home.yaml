@@ -1,0 +1,25 @@
+# Merge this under your existing template: configuration; do not duplicate the root key.
+# Replace all entity IDs with your real Home Assistant entities.
+# This is a custom Pixel Home data contract, not a built-in HA dashboard format.
+template:
+  - sensor:
+      - name: Pixel Home Dashboard
+        unique_id: pixel_home_dashboard
+        state: ready
+        attributes:
+          title: "Welcome home"
+          idle_seconds: 45
+          favorites:
+            - light.living_room
+            - climate.living_room
+            - switch.kitchen
+            - lock.front_door
+          scenes:
+            - scene.good_morning
+            - scene.movie_time
+          players:
+            - media_player.living_room
+          music:
+            - title: "My morning playlist"
+              uri: "REPLACE_WITH_A_MUSIC_ASSISTANT_PLAYLIST_URI"
+              type: playlist

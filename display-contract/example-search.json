@@ -1,0 +1,21 @@
+{
+  "protocol_version": "1.0",
+  "response_id": "example_search",
+  "layout": "search",
+  "title": "Display example",
+  "summary": "This is a sample of the search layout.",
+  "spoken_text": "A heat pump moves heat rather than generating it directly.",
+  "ttl_seconds": 60,
+  "blocks": [
+    {
+      "type": "sources",
+      "items": [
+        {
+          "title": "Home Assistant",
+          "url": "https://www.home-assistant.io/",
+          "excerpt": "Official website"
+        }
+      ]
+    }
+  ]
+}

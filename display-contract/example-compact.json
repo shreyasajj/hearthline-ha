@@ -1,0 +1,17 @@
+{
+  "protocol_version": "1.0",
+  "response_id": "example_compact",
+  "layout": "compact",
+  "title": "Display example",
+  "summary": "This is a sample of the compact layout.",
+  "spoken_text": "A heat pump moves heat rather than generating it directly.",
+  "ttl_seconds": 60,
+  "blocks": [
+    {
+      "type": "status",
+      "label": "Example only",
+      "state": "partial",
+      "detail": "This fixture does not report real device state."
+    }
+  ]
+}
