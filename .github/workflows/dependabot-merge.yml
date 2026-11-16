@@ -1,4 +1,4 @@
-name: Merge passing Dependabot updates
+name: Approve and merge passing Dependabot updates
 
 on:
   workflow_run:
@@ -22,7 +22,7 @@ jobs:
     timeout-minutes: 5
     steps:
       # No checkout or execution of pull-request code in this privileged workflow.
-      - name: Verify bot ownership, current commit and successful CI before merging
+      - name: Verify CI and approve the tested Dependabot commit before merging
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
@@ -70,6 +70,14 @@ jobs:
                      '-f','ref='+pr['head']['ref'])
                   print(f'Refreshed Dependabot PR #{number}; fresh CI requested before merge')
                   continue
+              reviews=api(f'repos/{repo}/pulls/{number}/reviews?per_page=100')
+              already_approved=any(review['user']['login']=='github-actions[bot]'
+                  and review['state']=='APPROVED' and review['commit_id']==pr['head']['sha']
+                  for review in reviews)
+              if not already_approved:
+                  gh('api','--method','POST',f'repos/{repo}/pulls/{number}/reviews',
+                     '-f','event=APPROVE','-f','commit_id='+pr['head']['sha'],
+                     '-f','body=Automatically approved: the full CI gate, including HACS validation, passed for this exact Dependabot commit.')
               gh('pr','merge',str(number),'--repo',repo,'--squash','--match-head-commit',pr['head']['sha'])
               print(f'Merged passing Dependabot PR #{number}')
           PY
