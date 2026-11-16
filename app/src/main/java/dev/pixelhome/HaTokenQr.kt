@@ -38,7 +38,7 @@ class QrImportSession(private val startedAt: Long) {
     private var consumed = false
     fun accept(raw: String, now: Long, unlocked: Boolean, foreground: Boolean): HaQrToken {
         require(!consumed && unlocked && foreground && now >= startedAt && now - startedAt <= 120000) {
-            "Scan cancelled or expired. Try again while Pixel Home is open and unlocked."
+            "Scan cancelled or expired. Try again while Hearthline is open and unlocked."
         }
         consumed = true
         return HaQrToken.parse(raw)

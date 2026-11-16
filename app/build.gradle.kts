@@ -8,13 +8,13 @@ android {
     compileSdk = 35
     defaultConfig {
         applicationId = providers.gradleProperty("pixelHomeTestId").getOrElse("dev.pixelhome")
-        manifestPlaceholders["appLabel"] = if(providers.gradleProperty("pixelHomeTestId").isPresent) "Pixel Home Preview" else "Pixel Home"
+        manifestPlaceholders["appLabel"] = if(providers.gradleProperty("pixelHomeTestId").isPresent) "Hearthline Preview" else "Hearthline"
         ndk { abiFilters += "arm64-v8a" }
         minSdk = 31
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         targetSdk = 35
-        versionCode = 9
-        versionName = "0.6.1"
+        versionCode = 11
+        versionName = "0.7.1"
     }
     buildFeatures { compose = true }
     compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }

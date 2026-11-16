@@ -39,14 +39,22 @@ physical completion from service acceptance."""
 
 class DisplayTool(llm.Tool):
     integration='pixel_home'
-    def __init__(self, action, description, parameters):
+    def __init__(self, action, description, parameters, display_id=None):
+        self.display_id=display_id
         self.action=action; self.name='pixel_home_'+action
         self.description=description; self.parameters=schema.Schema(parameters)
         if hasattr(llm,'ToolAnnotations'):
             self.annotations=llm.ToolAnnotations(read_only=action in ('get_screen_context','get_response_status'),
                 destructive=False,idempotent=True,open_world=False)
     async def async_call(self,hass,tool_input,llm_context):
-        bridge=hass.data['pixel_home']; args=tool_input.tool_args
+        if self.display_id:
+            tablet=hass.data.get('pixel_home_tablets',{}).get(self.display_id)
+            user_id=getattr(getattr(llm_context,'context',None),'user_id',None)
+            if tablet is None or not tablet.entry.data.get('credential_hash') or user_id != tablet.entry.data.get('owner_id'):
+                raise HomeAssistantError('Paired display owner authorization required')
+            bridge=tablet.bridge
+        else: bridge=hass.data['pixel_home']
+        args=tool_input.tool_args
         try:
             if self.action=='get_screen_context': data=bridge.context()
             elif self.action=='present_template':
@@ -78,4 +86,6 @@ class DisplayAPI(llm.API):
                 {required('session_id'):str,required('capability_revision'):str,required('request_json'):str}),
             DisplayTool('get_response_status','Check whether an answer was rendered, rejected, expired or dismissed.',{required('session_id'):str,required('response_id'):str}),
             DisplayTool('dismiss_response','Dismiss a specific answer after user request.',{required('session_id'):str,required('response_id'):str})]
+        if self.id.startswith('pixel_home_'):
+            for tool in tools: tool.display_id=self.id[len('pixel_home_'):]
         return llm.APIInstance(api=self,api_prompt=PROMPT,llm_context=llm_context,tools=tools)

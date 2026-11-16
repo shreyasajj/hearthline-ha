@@ -38,7 +38,7 @@ val LocalSendspinReceiver = staticCompositionLocalOf<SendspinReceiver> { error("
     OutlinedCard(Modifier.widthIn(max = 800.dp).fillMaxWidth()) {
         Column(Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Text("Tablet / dock audio receiver", style = MaterialTheme.typography.headlineSmall)
-            Text("Receive music from Music Assistant using Sendspin. Runs while Pixel Home is visible, including its visible dock clock. Leaving the app stops audio and network listening.")
+            Text("Receive music from Music Assistant using Sendspin. Runs while Hearthline is visible, including its visible dock clock. Leaving the app stops audio and network listening.")
             Row {
                 Text("Enable Sendspin receiver", Modifier.weight(1f))
                 Switch(receiver.enabled,receiver::enable,enabled = !receiver.resetting)

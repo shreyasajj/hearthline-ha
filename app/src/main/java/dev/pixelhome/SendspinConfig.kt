@@ -3,7 +3,7 @@ package dev.pixelhome
 import java.net.URI
 
 /** Only explicit operator configuration enters the receiver; no HA/LLM-derived endpoints. */
-data class SendspinConfig(val name: String = "Pixel Home", val server: String = "", val port: Int = 8928) {
+data class SendspinConfig(val name: String = "Hearthline", val server: String = "", val port: Int = 8928) {
     fun validated(): SendspinConfig {
         val cleanName = name.trim()
         require(cleanName.isNotEmpty() && cleanName.toByteArray().size <= 64 && cleanName.none { it.isISOControl() }) { "Use a player name of 1–64 UTF-8 bytes." }

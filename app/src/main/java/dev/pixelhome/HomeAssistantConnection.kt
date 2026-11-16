@@ -47,7 +47,26 @@ private fun Context.hostActivity(): MainActivity? = when(this) {
     }
     OutlinedCard(Modifier.widthIn(max = 800.dp).fillMaxWidth()) {
         Column(Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            Text("Home Assistant connection", style = MaterialTheme.typography.titleLarge)
+            Text("Hearthline · Home Assistant", style = MaterialTheme.typography.titleLarge)
+            Text(vm.pairingStatus)
+            if(vm.configRevision.isNotEmpty()) Text("Dashboard revision: ${vm.configRevision}")
+            if(vm.tabletIdentity.isNotEmpty()) Text("Installation: ${vm.tabletIdentity}",style=MaterialTheme.typography.bodySmall)
+            if(!vm.paired) TextButton(onClick=vm::forgetLocally,enabled=!vm.busy) { Text("Forget stored server locally") }
+            if(vm.paired) {
+                Row(verticalAlignment=androidx.compose.ui.Alignment.CenterVertically) {
+                    Switch(checked=vm.telemetryEnabled,onCheckedChange=vm::telemetry)
+                    Text("Share tablet telemetry while app is visible")
+                }
+                Text("Last successful telemetry push: ${vm.lastPush ?: "None"}")
+                TextButton(onClick=vm::reconnect) { Text("Reconnect") }
+                TextButton(onClick=vm::forgetServer,enabled=!vm.busy) { Text("Unpair and forget server") }
+                TextButton(onClick=vm::forgetLocally,enabled=!vm.busy) { Text("Forget locally (revoke in HA separately)") }
+            }
+            Row(verticalAlignment=androidx.compose.ui.Alignment.CenterVertically) {
+                Switch(checked=draft.legacy,onCheckedChange={ draft.legacy=it })
+                Text("Legacy / manual dashboard sensor")
+            }
+            if(!draft.legacy) Text("Add Hearthline in HA Settings → Devices & services. Choose entities, then authorize once below. The scoped tablet pairing is remembered encrypted on this device. The HA account token stays in memory and is cleared after pairing. Pairing permits selected entity reads, supported dashboard controls, display delivery and optional tablet telemetry.")
             Text("On another screen: Home Assistant → your profile → Security → Long-lived access tokens → Create token → Generate QR code.")
             Text("Scan the token QR or choose its image. Enter your HTTPS server address separately; Home Assistant's token QR contains only the token.")
             OutlinedTextField(draft.url, { draft.url = it }, label = { Text("HTTPS server URL") }, placeholder = { Text("https://home.example.com") }, singleLine = true, modifier = Modifier.fillMaxWidth())
@@ -63,10 +82,16 @@ private fun Context.hostActivity(): MainActivity? = when(this) {
                 visualTransformation = PasswordVisualTransformation(), keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, autoCorrectEnabled = false), singleLine = true, modifier = Modifier.fillMaxWidth())
             if(draft.token.isNotEmpty()) TextButton(onClick = { draft.clearToken(); draft.note = "Token cleared." },
                 modifier = Modifier.heightIn(min = 56.dp)) { Text("Clear token") }
-            OutlinedTextField(draft.sensor, { draft.sensor = it }, label = { Text("Dashboard sensor entity ID") }, singleLine = true, modifier = Modifier.fillMaxWidth())
+            if(draft.legacy) OutlinedTextField(draft.sensor, { draft.sensor = it }, label = { Text("Dashboard sensor entity ID") }, singleLine = true, modifier = Modifier.fillMaxWidth())
+            if(!draft.legacy) {
+                Button(onClick=vm::loadPairingChoices,enabled=draft.token.isNotBlank() && !vm.busy) { Text("Find configured tablets") }
+                vm.pairingChoices.forEach { (entry,name) ->
+                    OutlinedButton(onClick={ vm.pairTablet(entry) },enabled=!vm.busy) { Text("Pair and remember $name") }
+                }
+            }
             Text("QR decoding runs on this tablet. Camera access is used only while the scanner is open. The token stays in process memory; rescan or paste it after restarting the app.", style = MaterialTheme.typography.bodySmall)
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                Button(onClick = {
+                if(draft.legacy) Button(onClick = {
                     val token = draft.token
                     draft.clearToken(); draft.cancelRequests(); draft.note = null
                     vm.connect(draft.url, token, draft.sensor)

@@ -38,8 +38,8 @@ class SendspinReceiver(app: Application) : AndroidViewModel(app) {
     private var visible = false
     private var runtime: Runtime? = null
     var enabled by mutableStateOf(prefs.getBoolean("enabled", false)); private set
-    var config by mutableStateOf(SendspinConfig(prefs.getString("name", "Pixel Home")!!, prefs.getString("server", "")!!, prefs.getInt("port", 8928))); private set
-    var status by mutableStateOf(if(enabled) "Paused · Pixel Home is not visible" else "Disabled"); private set
+    var config by mutableStateOf(SendspinConfig(prefs.getString("name", "Hearthline")!!, prefs.getString("server", "")!!, prefs.getInt("port", 8928))); private set
+    var status by mutableStateOf(if(enabled) "Paused · Hearthline is not visible" else "Disabled"); private set
     var listeningPort by mutableStateOf<Int?>(null); private set
     var discovery by mutableStateOf("Not advertising"); private set
     var output by mutableStateOf("No audio stream"); private set
@@ -108,7 +108,7 @@ class SendspinReceiver(app: Application) : AndroidViewModel(app) {
         val waitForClose = cleanup.launch { pending?.join(); previous?.close() }
         closing = waitForClose
         listeningPort = null; discovery = "Not advertising"; output = "No audio stream"; playerRunning = false; focusHeld = false; title = null; error = null
-        status = if(!enabled) "Disabled" else if(!visible) "Paused · Pixel Home is not visible" else "Starting receiver…"
+        status = if(!enabled) "Disabled" else if(!visible) "Paused · Hearthline is not visible" else "Starting receiver…"
         if(!enabled || !visible) return
         startJob = viewModelScope.launch {
             try {
@@ -176,7 +176,7 @@ class SendspinReceiver(app: Application) : AndroidViewModel(app) {
         }, { true }, { muted })
         private fun post(action: () -> Unit) { handler.post { if(active.get() && runtime === this) action() } }
         private val host = object : SendSpinHost {
-            override val softwareVersion = "Pixel Home 0.6.1"
+            override val softwareVersion = "Hearthline 0.6.1"
             override val lowMemoryMode = true
             override val highPowerMode = false
             override val serverColors = false

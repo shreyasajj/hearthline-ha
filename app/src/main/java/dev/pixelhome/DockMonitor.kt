@@ -23,6 +23,7 @@ class DockMonitor(private val context: Context, private val changed: () -> Unit,
     var observation by mutableStateOf(resolveDock(signals, mode)); private set
     var batteryPercent by mutableStateOf<Int?>(null); private set
     var powerSource by mutableStateOf("unknown"); private set
+    var batteryStatus by mutableStateOf("unknown"); private set
     var charging by mutableStateOf<Boolean?>(null); private set
     val status: String get() = when {
         observation.overridden -> "${observation.connection.name.lowercase().replaceFirstChar { it.uppercase() }} · manual override"
@@ -58,6 +59,13 @@ class DockMonitor(private val context: Context, private val changed: () -> Unit,
         val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
         val scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
         batteryPercent = if (level >= 0 && scale > 0 && level <= scale) (level * 100 / scale).coerceIn(0, 100) else null
+        batteryStatus = when(intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)) {
+            BatteryManager.BATTERY_STATUS_CHARGING -> "charging"
+            BatteryManager.BATTERY_STATUS_FULL -> "full"
+            BatteryManager.BATTERY_STATUS_DISCHARGING -> "discharging"
+            BatteryManager.BATTERY_STATUS_NOT_CHARGING -> "not_charging"
+            else -> "unknown"
+        }
         charging = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1).let {
             when(it) { BatteryManager.BATTERY_STATUS_CHARGING -> true
                 BatteryManager.BATTERY_STATUS_FULL, BatteryManager.BATTERY_STATUS_DISCHARGING, BatteryManager.BATTERY_STATUS_NOT_CHARGING -> false

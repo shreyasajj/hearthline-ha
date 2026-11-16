@@ -1,106 +1,58 @@
 {
-  "services": {
-    "exchange": {
-      "name": "Exchange",
-      "description": "Tablet transport only; never expose exchange to an LLM.",
-      "fields": {
-        "display_id": {
-          "name": "Display id",
-          "description": "display id"
-        },
-        "session_id": {
-          "name": "Session id",
-          "description": "session id"
-        },
-        "capability_revision": {
-          "name": "Capability revision",
-          "description": "capability revision"
-        },
-        "locked": {
-          "name": "Locked",
-          "description": "locked"
-        },
-        "foreground": {
-          "name": "Foreground",
-          "description": "foreground"
-        },
-        "ack": {
-          "name": "Ack",
-          "description": "ack"
-        },
-        "current_screen": {
-          "name": "Current screen",
-          "description": "Current native app page; unknown if omitted."
+  "title": "Hearthline",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configure tablet dashboard",
+        "description": "Select real entities. Then pair from Hearthline using an HTTPS server and administrator authorization.",
+        "data": {
+          "name": "Tablet name",
+          "area_id": "Area",
+          "favorites": "Favorites (ordered)",
+          "scenes": "Scenes (ordered)",
+          "players": "Players (ordered)",
+          "weather_entity": "Weather source",
+          "home_entities": "Home summary sources",
+          "music": "Music shortcuts (list of title, uri, type objects)",
+          "idle_seconds": "Idle timeout in seconds",
+          "heartbeat_timeout": "Offline timeout in seconds",
+          "revoke": "Revoke tablet pairing",
+          "journey_endpoint": "Optional fixed HTTPS Journey adapter endpoint",
+          "home_origin": "Optional configured Journey origin",
+          "journey_token": "Optional Journey adapter token",
+          "journey_traffic": "Journey provider supports traffic"
         }
       }
     },
-    "get_screen_context": {
-      "name": "Get screen context",
-      "description": "Pixel Home display action. Returns response data; see DISPLAY-SETUP.md.",
-      "fields": {
-        "display_id": {
-          "name": "Display id",
-          "description": "display id"
+    "error": {
+      "invalid_selection": "Choose existing supported entities and valid bounded settings."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Dashboard and pairing",
+        "data": {
+          "name": "Tablet name",
+          "area_id": "Area",
+          "favorites": "Favorites (ordered)",
+          "scenes": "Scenes (ordered)",
+          "players": "Players (ordered)",
+          "weather_entity": "Weather source",
+          "home_entities": "Home summary sources",
+          "music": "Music shortcuts (list of title, uri, type objects)",
+          "idle_seconds": "Idle timeout in seconds",
+          "heartbeat_timeout": "Offline timeout in seconds",
+          "revoke": "Revoke tablet pairing",
+          "journey_endpoint": "Optional fixed HTTPS Journey adapter endpoint",
+          "home_origin": "Optional configured Journey origin",
+          "journey_token": "Optional Journey adapter token",
+          "journey_traffic": "Journey provider supports traffic"
         }
       }
     },
-    "present_response": {
-      "name": "Present response",
-      "description": "Pixel Home display action. Returns response data; see DISPLAY-SETUP.md.",
-      "fields": {
-        "display_id": {
-          "name": "Display id",
-          "description": "display id"
-        },
-        "session_id": {
-          "name": "Session id",
-          "description": "session id"
-        },
-        "capability_revision": {
-          "name": "Capability revision",
-          "description": "capability revision"
-        },
-        "request": {
-          "name": "Request",
-          "description": "request"
-        }
-      }
-    },
-    "get_response_status": {
-      "name": "Get response status",
-      "description": "Pixel Home display action. Returns response data; see DISPLAY-SETUP.md.",
-      "fields": {
-        "display_id": {
-          "name": "Display id",
-          "description": "display id"
-        },
-        "response_id": {
-          "name": "Response id",
-          "description": "response id"
-        },
-        "session_id": {
-          "name": "Session ID",
-          "description": "Session from current screen context."
-        }
-      }
-    },
-    "dismiss_response": {
-      "name": "Dismiss response",
-      "description": "Pixel Home display action. Returns response data; see DISPLAY-SETUP.md.",
-      "fields": {
-        "display_id": {
-          "name": "Display id",
-          "description": "display id"
-        },
-        "session_id": {
-          "name": "Session id",
-          "description": "session id"
-        },
-        "response_id": {
-          "name": "Response id",
-          "description": "response id"
-        }
-      }
+    "error": {
+      "invalid_selection": "Choose existing supported entities and valid bounded settings."
     }
   }
 }

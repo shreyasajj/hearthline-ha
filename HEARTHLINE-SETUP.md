@@ -1,0 +1,37 @@
+# Hearthline setup
+
+1. Copy `home-assistant/custom_components/pixel_home` into the HA configuration's `custom_components` directory, replacing the earlier integration in the same domain. Restart HA. Tested with HA 2026.10.4 only.
+2. In HA Settings → Devices & services → Add integration, choose **Hearthline**. Create one entry per tablet. Choose a name, area and actual existing favorites, scenes and players. Selection lists retain their stored order. The flow rejects missing entities and unsupported domains; unavailable entities remain unavailable. Music shortcuts are an optional list of `{title, uri, type}` objects using actual media IDs supported by the selected player. Empty selections are valid.
+3. Install the preview APK. Unlock Android normally and open Settings → Home Assistant. Leave **Legacy / manual dashboard sensor** off. Enter an explicit HTTPS origin such as `https://ha.example.net:8123`. Paths, credentials in URLs, HTTP and redirects are rejected. Local certificate authorities must already be trusted by Android; the app does not install certificates.
+4. Authorize with an administrator's HA long-lived token, pasted or imported using the official raw HA token QR. Press **Find configured tablets**, then **Pair and remember** for the desired HA entry. This delegates narrowly bounded access to the selected dashboard entities, supported controls, display exchange and telemetry. An already paired entry must first be revoked in HA options. Repeated pairing cannot silently replace another tablet.
+5. The HA account token is cleared after successful pairing. Only the scoped tablet credential is remembered, encrypted with a dedicated Android Keystore AES-GCM key in private no-backup storage. It is independent of Sendspin. Revoke the temporary HA account token in the HA profile after pairing if it was created solely for setup. Pairing does not generate admin tokens.
+6. The native dashboard loads current configuration and real state without a sensor ID. Change favorites/player order in the HA entry's options; the foreground app fetches changes on its next successful two-second poll. The displayed revision changes when the definition changes. Launching the app again restores the remembered pairing. A revoked/expired account shows a re-pair state; offline values may remain visibly stale and controls are disabled.
+7. Optional: enable **Share tablet telemetry while app is visible**. The installation ID, connection state and last successful push are shown in the same card. Telemetry never enables a background service. Disable the toggle independently of dock/ambient and Sendspin settings.
+
+## First push and availability
+
+Keep the activity resumed, enable telemetry, and wait for a successful-push timestamp. In HA the entry's device should show battery, charging, power source, physical dock state, telemetry connection, foreground, interactive and observable lock state. Battery full reports charging=false even with AC power. AC alone never establishes a dock.
+
+Last seen and app version diagnostics are disabled by default to avoid recorder churn; enable them on the device's entity page if needed. Unchanged sensor values have no changing sequence/timestamp attributes. Availability uses server receipt time, a 120-second default timeout configurable to 60–900 seconds, evaluated every 15 seconds. On timeout, measurement entities become unavailable and Telemetry connected becomes off. Lost data is never translated into undocked/unlocked/zero battery.
+
+Pause/background suspends polling and sending. An in-flight request can finish within its 15-second transport timeout. There is no background heartbeat, offline event history or promise of instant lock/dock reporting while another app is foreground. GrapheneOS battery restrictions can further delay delivery. The optional existing dock-return watcher does not authorize telemetry and is unchanged.
+
+## Revocation and forgetting
+
+Use **Unpair and forget server** while connected: the app first invalidates the server credential and then deletes its encrypted local copy and key. If offline, use HA entry options → Revoke tablet pairing; then **Forget stored server locally** on Android. Local-only forgetting explicitly leaves server revocation to you. Deleting the HA config entry also removes its endpoint access. Deleting/deactivating the authorizing HA user stops access. A manual reconnect retries the current credential; revoked credentials require new pairing.
+
+One active pairing per installation and per entry is enforced. Device/entity unique IDs belong to the stable HA entry, not friendly names or hardware serials. HA restarts retain pairing/configuration but begin with telemetry unavailable until the next foreground session.
+
+## Existing sensor/YAML users
+
+Existing YAML `pixel_home:` and `sensor.pixel_home_dashboard` remain an explicit legacy path. To keep it, enable **Legacy / manual dashboard sensor**, enter its ID, and connect as before; that account token remains process-only. No token or sensor configuration is silently migrated into persistent storage.
+
+To migrate, create a Hearthline config entry and select the actual entities previously listed in the sensor attributes. Pair using steps 3–5, verify the native dashboard, then remove the artificial dashboard sensor if no other legacy client uses it. The YAML singleton display ID and its providers remain separate; use the new entry's display ID shown in its `/config` response for paired display services. Service/API registration occurs once per domain. Each entry also registers its own Hearthline LLM display API, restricted to its authorizing account. Choose that API in the relevant Assist configuration.
+
+Weather and home-status sources can be selected per entry. Optional Journey settings accept the same existing fixed HTTPS adapter endpoint, explicit configured origin, optional provider token and traffic capability as the legacy adapter (see TEMPLATE-SETUP.md). These settings stay on HA and never enter tablet config or diagnostics. A real configured adapter is required; no cloud/paid provider is configured automatically. Existing YAML Journey configuration remains on its legacy display until explicitly copied into the new entry's options.
+
+The official token QR is still only an account-token import. Sendspin `SP:0` is still a receiver pairing token. Neither is a provisioning envelope. This version uses explicit manual server setup and implements no setup QR or server discovery.
+
+## Tablet acceptance still requiring participation
+
+A full clean-install acceptance run needs a disposable HA server with Android-trusted HTTPS, authorized HA account access, and an unlocked tablet. Use real test entities, pair without a dashboard sensor, edit entity order, restart the app, test controls and revoke. Physically attach/detach to verify dock signals. Never provide the tablet PIN to tooling. See VALIDATION.md for what was actually run.

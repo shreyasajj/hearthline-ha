@@ -1,0 +1,100 @@
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :sendspin-player:preBuild UP-TO-DATE
+> Task :sendspin-player:preDebugBuild UP-TO-DATE
+> Task :sendspin-player:writeDebugAarMetadata UP-TO-DATE
+> Task :sendspin-shared:preBuild UP-TO-DATE
+> Task :sendspin-shared:preDebugBuild UP-TO-DATE
+> Task :sendspin-shared:writeDebugAarMetadata UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :sendspin-player:generateDebugResValues UP-TO-DATE
+> Task :sendspin-player:generateDebugResources UP-TO-DATE
+> Task :sendspin-player:packageDebugResources UP-TO-DATE
+> Task :sendspin-shared:generateDebugResValues UP-TO-DATE
+> Task :sendspin-shared:generateDebugResources UP-TO-DATE
+> Task :sendspin-shared:packageDebugResources UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests
+> Task :app:extractDeepLinksDebug
+> Task :sendspin-player:extractDeepLinksDebug UP-TO-DATE
+> Task :sendspin-player:processDebugManifest UP-TO-DATE
+> Task :sendspin-shared:extractDeepLinksDebug UP-TO-DATE
+> Task :sendspin-shared:processDebugManifest UP-TO-DATE
+> Task :app:processDebugMainManifest
+> Task :app:processDebugManifest
+> Task :sendspin-player:compileDebugLibraryResources UP-TO-DATE
+> Task :sendspin-player:parseDebugLocalResources UP-TO-DATE
+> Task :sendspin-player:generateDebugRFile UP-TO-DATE
+> Task :sendspin-shared:compileDebugLibraryResources UP-TO-DATE
+> Task :sendspin-shared:parseDebugLocalResources UP-TO-DATE
+> Task :sendspin-shared:generateDebugRFile UP-TO-DATE
+> Task :sendspin-player:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :sendspin-shared:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :sendspin-shared:compileDebugKotlinAndroid UP-TO-DATE
+> Task :sendspin-shared:javaPreCompileDebug UP-TO-DATE
+> Task :sendspin-shared:compileDebugJavaWithJavac NO-SOURCE
+> Task :sendspin-shared:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :sendspin-player:compileDebugKotlin UP-TO-DATE
+> Task :sendspin-player:javaPreCompileDebug UP-TO-DATE
+> Task :sendspin-player:compileDebugJavaWithJavac NO-SOURCE
+> Task :sendspin-player:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:mergeDebugShaders UP-TO-DATE
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :sendspin-player:mergeDebugShaders UP-TO-DATE
+> Task :sendspin-player:compileDebugShaders NO-SOURCE
+> Task :sendspin-player:generateDebugAssets UP-TO-DATE
+> Task :sendspin-player:packageDebugAssets UP-TO-DATE
+> Task :sendspin-shared:mergeDebugShaders UP-TO-DATE
+> Task :sendspin-shared:compileDebugShaders NO-SOURCE
+> Task :sendspin-shared:debugAssetsCopyForAGP NO-SOURCE
+> Task :sendspin-shared:generateDebugAssets UP-TO-DATE
+> Task :sendspin-shared:packageDebugAssets UP-TO-DATE
+> Task :app:mergeDebugAssets UP-TO-DATE
+> Task :app:compressDebugAssets UP-TO-DATE
+> Task :sendspin-player:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :sendspin-shared:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :app:desugarDebugFileDependencies UP-TO-DATE
+> Task :sendspin-player:processDebugJavaRes UP-TO-DATE
+> Task :sendspin-shared:processDebugJavaRes UP-TO-DATE
+> Task :app:checkDebugDuplicateClasses UP-TO-DATE
+> Task :app:mergeExtDexDebug UP-TO-DATE
+> Task :sendspin-player:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :sendspin-shared:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :app:mergeDebugJniLibFolders UP-TO-DATE
+> Task :sendspin-player:mergeDebugJniLibFolders UP-TO-DATE
+> Task :sendspin-player:mergeDebugNativeLibs NO-SOURCE
+> Task :sendspin-player:copyDebugJniLibsProjectOnly UP-TO-DATE
+> Task :sendspin-shared:mergeDebugJniLibFolders UP-TO-DATE
+> Task :sendspin-shared:mergeDebugNativeLibs NO-SOURCE
+> Task :sendspin-shared:copyDebugJniLibsProjectOnly UP-TO-DATE
+> Task :app:mergeDebugNativeLibs UP-TO-DATE
+> Task :app:mergeLibDexDebug UP-TO-DATE
+> Task :app:stripDebugDebugSymbols UP-TO-DATE
+> Task :app:validateSigningDebug UP-TO-DATE
+> Task :app:writeDebugAppMetadata UP-TO-DATE
+> Task :app:writeDebugSigningConfigVersions UP-TO-DATE
+> Task :app:processDebugManifestForPackage
+> Task :app:processDebugResources
+> Task :app:compileDebugKotlin UP-TO-DATE
+> Task :app:compileDebugJavaWithJavac UP-TO-DATE
+> Task :app:dexBuilderDebug UP-TO-DATE
+> Task :app:mergeDebugGlobalSynthetics UP-TO-DATE
+> Task :app:processDebugJavaRes UP-TO-DATE
+> Task :app:mergeDebugJavaResource UP-TO-DATE
+> Task :app:mergeProjectDexDebug UP-TO-DATE
+> Task :app:packageDebug
+> Task :app:createDebugApkListingFileRedirect
+> Task :app:assembleDebug
+
+BUILD SUCCESSFUL in 11s
+74 actionable tasks: 8 executed, 66 up-to-date

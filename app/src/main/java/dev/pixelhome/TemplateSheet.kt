@@ -63,7 +63,7 @@ data class MapConfiguration(val style:String,val origins:Set<String>,val attribu
                 verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(20.dp)) {
-                    Text("Pixel Home", fontSize = 24.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
+                    Text("Hearthline", fontSize = 24.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
                     if (vm.demo) TemplatePill("Demo · sample data")
                     Text(templateTime(now), fontSize = 22.sp)
                 }

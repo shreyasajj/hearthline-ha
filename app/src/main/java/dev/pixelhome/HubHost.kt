@@ -51,7 +51,7 @@ class HubHost(private val activity: ComponentActivity) {
         if(!autoReturnOnLock || !overlayPermission || DockReturnService.running) return
         if(Build.VERSION.SDK_INT >= 33 && activity.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) { notice = "Allow notifications to run the visible dock monitor."; return }
         try { activity.startForegroundService(Intent(activity, DockReturnService::class.java)) }
-        catch(_: RuntimeException) { notice = "Android could not start dock monitoring. Reopen Pixel Home to retry; automatic return is not currently running." }
+        catch(_: RuntimeException) { notice = "Android could not start dock monitoring. Reopen Hearthline to retry; automatic return is not currently running." }
     }
     var rearmOnLock by mutableStateOf(preferences.getBoolean("dock_rearm", true)); private set
     var keepDockAwake by mutableStateOf(preferences.getBoolean("dock_keep_awake", false)); private set
@@ -169,7 +169,7 @@ class HubHost(private val activity: ComponentActivity) {
         keyguard.requestDismissKeyguard(activity, object : KeyguardManager.KeyguardDismissCallback() {
             override fun onDismissSucceeded() { notice = null; refresh() }
             override fun onDismissCancelled() { notice = "Still locked. Your device controls remain protected."; refresh() }
-            override fun onDismissError() { notice = "Use Android's lock screen to unlock, then return to Pixel Home."; refresh() }
+            override fun onDismissError() { notice = "Use Android's lock screen to unlock, then return to Hearthline."; refresh() }
         })
     }
     fun systemLockScreen() {

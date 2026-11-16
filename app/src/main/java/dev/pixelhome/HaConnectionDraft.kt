@@ -4,6 +4,7 @@ import androidx.compose.runtime.*
 
 /** Connection form stays in process memory, including across permission/picker activities. */
 class HaConnectionDraft {
+    var legacy by mutableStateOf(false)
     var url by mutableStateOf("")
     var token by mutableStateOf(""); private set
     var sensor by mutableStateOf("sensor.pixel_home_dashboard")

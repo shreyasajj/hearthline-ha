@@ -1,0 +1,69 @@
+# Dashboard card fragment. kitchen IDs were generated in HA fixture tests.
+# Replace them with IDs from YOUR configured device. Enable Last seen first.
+dashboard_card:
+  type: entities
+  title: Hearthline tablet
+  entities:
+    - sensor.kitchen_battery
+    - binary_sensor.kitchen_charging
+    - binary_sensor.kitchen_docked
+    - sensor.kitchen_dock_detection_source
+    - binary_sensor.kitchen_telemetry_connected
+    - sensor.kitchen_last_seen
+
+# Example HA package: copy only automation: into a HA package or adapt in UI.
+# notify.mobile_app_your_phone is a PLACEHOLDER: choose your notification action.
+automation:
+  - alias: Hearthline physical dock changed
+    id: hearthline_physical_dock_changed
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.kitchen_docked
+        to: 'on'
+        for: '00:00:10'
+      - trigger: state
+        entity_id: binary_sensor.kitchen_docked
+        to: 'off'
+        for: '00:00:10'
+    conditions:
+      - condition: state
+        entity_id: binary_sensor.kitchen_telemetry_connected
+        state: 'on'
+      - condition: template
+        value_template: >-
+          {{ trigger.from_state is not none and
+             trigger.from_state.state in ['on', 'off'] and
+             states('sensor.kitchen_dock_detection_source') not in
+             ['unknown', 'unavailable', 'manual_override'] }}
+    actions:
+      - action: notify.mobile_app_your_phone
+        data:
+          message: >-
+            Tablet physical dock is {{ 'connected' if trigger.to_state.state == 'on' else 'disconnected' }}.
+  - alias: Hearthline battery low
+    id: hearthline_battery_low
+    triggers:
+      - trigger: numeric_state
+        entity_id: sensor.kitchen_battery
+        below: 20
+        for: '00:05:00'
+    conditions:
+      - condition: state
+        entity_id: binary_sensor.kitchen_telemetry_connected
+        state: 'on'
+    actions:
+      - action: notify.mobile_app_your_phone
+        data:
+          message: 'Tablet battery below 20%.'
+  - alias: Hearthline telemetry stale
+    id: hearthline_telemetry_stale
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.kitchen_telemetry_connected
+        from: 'on'
+        to: 'off'
+        for: '00:01:00'
+    actions:
+      - action: notify.mobile_app_your_phone
+        data:
+          message: 'Tablet telemetry is offline. Dock state is unavailable; this is not an undock event.'

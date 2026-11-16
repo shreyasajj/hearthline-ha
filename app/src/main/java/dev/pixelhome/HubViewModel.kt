@@ -33,6 +33,112 @@ class HubViewModel : ViewModel() {
     var dark by mutableStateOf(false)
     var artwork by mutableStateOf<Bitmap?>(null); private set
     private var artworkKey = ""
+    var pairingChoices by mutableStateOf<List<Pair<String,String>>>(emptyList()); private set
+    var pairingStatus by mutableStateOf("No remembered server"); private set
+    var configRevision by mutableStateOf(""); private set
+    var telemetryEnabled by mutableStateOf(false); private set
+    var lastPush by mutableStateOf<String?>(null); private set
+    var tabletIdentity by mutableStateOf(""); private set
+    var paired by mutableStateOf(false); private set
+    private var pairingStore: TabletPairingStore? = null
+    private var remembered: JSONObject? = null
+    private var telemetrySnapshot: (() -> JSONObject)? = null
+    private var telemetrySession = ""
+    private var telemetrySequence = 0L
+    private var lastTelemetryShape = ""
+    private var lastPushMonotonic = 0L
+    private var failures = 0
+    private var authRevoked = false
+    fun attachPairing(context: android.content.Context, host: HubHost, screen: () -> String) {
+        telemetrySnapshot = { tabletTelemetry(context,host,screen(),tabletIdentity,telemetrySession,telemetrySequence) }
+        if(pairingStore != null) return
+        try {
+            val store=TabletPairingStore(context.applicationContext); pairingStore=store; tabletIdentity=store.tabletId
+            remembered=store.load()
+            remembered?.let { record ->
+                api=HomeAssistant(record.getString("origin"),record.getString("credential"),record.getString("entry_id"))
+                paired=true; telemetryEnabled=record.optBoolean("telemetry",false); demo=false; entities=emptyMap(); config=DashboardConfig(); selectedPlayer=""
+                pairingStatus="Restoring remembered pairing"; foreground(foreground)
+            }
+        } catch(_: Exception) { pairingStatus="Stored pairing unavailable. Forget server and pair again." }
+    }
+    fun loadPairingChoices() {
+        if(!unlocked() || busy) return
+        busy=true
+        viewModelScope.launch {
+            try {
+                val choices=HomeAssistant(connectionDraft.url,connectionDraft.token).pairingChoices()
+                pairingChoices=(0 until choices.length()).map { choices.getJSONObject(it) }.filter { !it.getBoolean("paired") }
+                    .map { it.getString("entry_id") to it.getString("name") }
+                connectionDraft.note=if(pairingChoices.isEmpty()) "Add a Hearthline tablet in HA, or revoke its previous pairing in options." else "Choose the tablet dashboard to remember."
+            } catch(e: CancellationException) { throw e }
+            catch(_: Exception) { connectionDraft.note="Could not load tablets. Check HTTPS, administrator token and integration installation." }
+            finally { busy=false }
+        }
+    }
+    fun pairTablet(entry: String) {
+        if(!unlocked() || busy || pairingChoices.none { it.first==entry }) return
+        val store=pairingStore ?: return
+        busy=true
+        viewModelScope.launch {
+            try {
+                val setup=HomeAssistant(connectionDraft.url,connectionDraft.token)
+                val result=setup.pair(store.tabletId,entry)
+                val credential=result.getString("credential")
+                val server=HomeAssistant(setup.origin.toString(),credential,entry)
+                try { store.save(server.origin.toString(),entry,credential,false) }
+                catch(e: Exception) { server.unpair(); throw e }
+                remembered=store.load(); api=server; paired=true; authRevoked=false; failures=0
+                demo=false; connected=false; entities=emptyMap(); config=DashboardConfig(); selectedPlayer=""
+                telemetrySession=""; lastPush=null; telemetryEnabled=false; pairingStatus="Pairing remembered with Android Keystore encryption"
+                connectionDraft.clearToken(); pairingChoices=emptyList()
+                assistant.configure(assistant.enabled,result.getString("display_id"))
+                foreground(foreground)
+            } catch(e: CancellationException) { throw e }
+            catch(_: Exception) { connectionDraft.note="Pairing failed. Check the tablet entry and revoke a previous pairing before retrying." }
+            finally { busy=false }
+        }
+    }
+    fun telemetry(value: Boolean) {
+        if(!unlocked()) return
+        val record=remembered ?: return
+        try {
+            pairingStore?.save(record.getString("origin"),record.getString("entry_id"),record.getString("credential"),value)
+            telemetryEnabled=value; telemetrySession=""; lastTelemetryShape=""
+        } catch(_: Exception) { pairingStatus="Could not save telemetry preference" }
+    }
+    fun reconnect() { if(unlocked()) { authRevoked=false; failures=0; telemetrySession=""; foreground(foreground) } }
+    fun forgetServer() {
+        if(!unlocked() || busy) return
+        val server=api?.takeIf { it.pairedEntry!=null }
+        busy=true
+        viewModelScope.launch {
+            try {
+                if(server!=null) { try { server.unpair() } catch(_: HaAuthorizationException) { /* Already revoked */ } }
+                pairingStore?.forget(); remembered=null; paired=false; telemetryEnabled=false; telemetrySession=""
+                api=null; poll?.cancel(); poll=null; assistant.lifecycle(foreground,null); connected=false
+                demo=false; entities=emptyMap(); config=DashboardConfig(); artwork=null; selectedPlayer=""
+                pairingStatus="Server forgotten and pairing revoked"; configRevision=""; lastPush=null
+            } catch(e: CancellationException) { throw e }
+            catch(_: Exception) { pairingStatus="Could not revoke. Restore connection and retry, or revoke in HA options and use Forget locally." }
+            finally { busy=false }
+        }
+    }
+    fun forgetLocally() {
+        if(!unlocked()) return
+        pairingStore?.forget(); remembered=null; paired=false; telemetryEnabled=false
+        api=null; poll?.cancel(); poll=null; connected=false; demo=false; entities=emptyMap(); config=DashboardConfig(); artwork=null
+        assistant.lifecycle(foreground,null); pairingStatus="Forgot locally. Revoke the tablet in HA options to invalidate its server credential."
+    }
+    private suspend fun sendTelemetry(server: HomeAssistant) {
+        if(!telemetryEnabled || server.pairedEntry==null) return
+        if(telemetrySession.isEmpty()) { telemetrySession=server.telemetrySession(); telemetrySequence=0; lastTelemetryShape="" }
+        val payload=telemetrySnapshot?.invoke() ?: return
+        val shape=JSONObject(payload.toString()).apply { remove("sequence"); remove("observed_at"); remove("session_id") }.toString()
+        if(shape==lastTelemetryShape && now()-lastPushMonotonic<30000) return
+        server.pushTelemetry(payload)
+        telemetrySequence++; lastTelemetryShape=shape; lastPushMonotonic=now(); lastPush=java.time.OffsetDateTime.now().toString()
+    }
     private var configEntity = "sensor.pixel_home_dashboard"
     private var api: HomeAssistant? = null
     private var poll: Job? = null
@@ -62,9 +168,14 @@ class HubViewModel : ViewModel() {
             if(!unlocked()) { connectionDraft.clearToken(); connectionDraft.cancelRequests() }
         }
         touch()
-        assistant.lifecycle(value, api)
+        if(!value) telemetrySession=""
+        assistant.lifecycle(value && !authRevoked, api)
         if (value && api != null) poll = viewModelScope.launch {
-            while (isActive) { refresh(); delay(2000) }
+            while (isActive && !authRevoked) {
+                refresh()
+                val backoff=if(failures==0) 2000L else (2000L shl failures.coerceAtMost(5)).coerceAtMost(60000L)
+                delay(backoff + if(failures>0) kotlin.random.Random.nextLong(0,1000) else 0)
+            }
         }
     }
     fun acceptTokenQr(value: HaQrToken) {
@@ -93,6 +204,7 @@ class HubViewModel : ViewModel() {
         }
         try {
             api = HomeAssistant(url, token.trim())
+            paired=false; authRevoked=false; failures=0; telemetrySession=""
             demo = false; connected = false; message = null; entities = emptyMap(); config = DashboardConfig()
             selectedPlayer = ""; configEntity = sensor; artwork = null; artworkKey = ""
             navigation.reset(now()); page = navigation.page(); foreground(foreground)
@@ -100,37 +212,51 @@ class HubViewModel : ViewModel() {
     }
     fun useDemo() {
         if (!unlocked()) return
-        api = null; poll?.cancel(); connected = false; artwork = null; artworkKey = ""
+        api = null; paired=false; poll?.cancel(); connected = false; artwork = null; artworkKey = ""
         assistant.lifecycle(foreground, null)
         demo = true; message = null; navigation.reset(now()); page = navigation.page(); demoData()
     }
     private suspend fun refresh() = mutex.withLock {
         val server = api ?: return@withLock
         try {
+            val next = if(server.pairedEntry!=null) {
+                val managed=server.tabletConfig()
+                configRevision=managed.getString("revision")
+                if(assistant.displayId!=managed.getString("display_id")) assistant.configure(assistant.enabled,managed.getString("display_id"))
+                parseConfig(managed.getJSONObject("dashboard"))
+            } else null
             val states = server.states()
-            val definition = states[configEntity]?.takeIf { it.available }
-                ?: error("Dashboard config missing")
-            val next = parseConfig(definition.attrs)
+            val resolved = next ?: parseConfig((states[configEntity]?.takeIf { it.available } ?: error("Dashboard config missing")).attrs)
             if (api !== server) return@withLock
-            config = next; entities = states; lastStateAt = now()
+            config = resolved; entities = states; lastStateAt = now()
             if (!connected) message = null
-            connected = true
-            if (selectedPlayer !in next.players) selectedPlayer = next.players.firstOrNull().orEmpty()
+            connected = true; failures=0; pairingStatus=if(paired) "Connected · remembered pairing" else "Legacy session connection"
+            sendTelemetry(server)
+            if (selectedPlayer !in resolved.players) selectedPlayer = resolved.players.firstOrNull().orEmpty()
             navigation.playback(playing, hubEnabled, now()); page = navigation.page()
             val path = player?.attrs?.optString("entity_picture").orEmpty()
             val key = selectedPlayer + path
             if (key != artworkKey) {
                 artworkKey = key; artwork = null
                 if (path.isNotBlank()) {
-                    val bitmap = server.artwork(path)
+                    val bitmap = server.artwork(path,selectedPlayer)
                     if (api === server && artworkKey == key) artwork = bitmap
                 }
             }
         } catch (e: CancellationException) { throw e }
+        catch (_: HaAuthorizationException) {
+            if(api === server) {
+                authRevoked=true; connected=false; telemetrySession=""; assistant.lifecycle(false,null)
+                pairingStatus="Authorization revoked or expired. Revoke/forget the pairing and pair again."
+                message=pairingStatus
+            }
+        }
         catch (_: Exception) {
             if (api === server) {
+                failures++; telemetrySession=""
                 connected = false
-                message = "Connection unavailable. Check HTTPS, token and dashboard sensor. Displayed values may be stale."
+                message = "Offline. Retrying with bounded backoff; displayed values may be stale."
+                pairingStatus="Offline · reconnecting"
             }
         }
     }

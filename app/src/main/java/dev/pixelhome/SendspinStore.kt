@@ -43,7 +43,7 @@ class SendspinStore(context: Context) {
     }
     val pairing: PairingConfigStore = object : PairingConfigStore {
         override fun load() = synchronized(lock) { config }
-        // Pixel Home requires pairing; unauthenticated LAN playback cannot be enabled remotely.
+        // Hearthline requires pairing; unauthenticated LAN playback cannot be enabled remotely.
         override fun setUnpairedAccess(enabled: Boolean) = !enabled
         override fun rotatePairingPsk(newPsk: ByteArray, claimedPskIds: Set<String>): PairingConfigStore.RotateResult = synchronized(lock) {
             if(newPsk.size != 32) return@synchronized PairingConfigStore.RotateResult.Invalid

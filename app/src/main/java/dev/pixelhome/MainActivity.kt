@@ -109,6 +109,16 @@ class MainActivity : ComponentActivity() {
         host.onDeviceLocked = ambient::wake
         val keyguard = applicationContext.getSystemService(android.app.KeyguardManager::class.java)
         model.attachAccessCheck { !keyguard.isKeyguardLocked && !keyguard.isDeviceLocked }
+        model.attachPairing(this,host) {
+            when {
+                ambient.asleep -> "clock"
+                host.isLockedNow() && !host.lockScreenEligible -> "unknown"
+                host.isLockedNow() -> if(host.showLockedDashboard) "home" else "clock"
+                host.dashboardPreview -> "home"
+                model.page == Page.IDLE -> "clock"
+                else -> model.page.name.lowercase()
+            }
+        }
         host.start()
         if(automaticReturn && (!host.lockScreenEligible || !host.dockEligible())) { finish(); return }
         host.restorePreferences(model)
@@ -206,7 +216,7 @@ class MainActivity : ComponentActivity() {
     Surface(Modifier.fillMaxSize()) {
         Column(Modifier.safeDrawingPadding().verticalScroll(rememberScrollState()).padding(32.dp), verticalArrangement = Arrangement.spacedBy(24.dp)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                Text("Pixel Home", style = MaterialTheme.typography.titleLarge)
+                Text("Hearthline", style = MaterialTheme.typography.titleLarge)
                 Icon(Icons.Outlined.Lock, "Device locked")
             }
             Text(clock.format(DateTimeFormatter.ofPattern("h:mm")), fontSize = 76.sp, fontWeight = FontWeight.Light)
@@ -228,7 +238,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-private val LocalDockReadOnly = staticCompositionLocalOf { false }
+internal val LocalDockReadOnly = staticCompositionLocalOf { false }
 @Composable private fun DockDashboard(vm: HubViewModel, host: HubHost, preview: Boolean = false) {
     var clock by remember { mutableStateOf(LocalDateTime.now()) }
     LaunchedEffect(Unit) { while(true) { delay(1000);clock=LocalDateTime.now() } }
@@ -237,12 +247,17 @@ private val LocalDockReadOnly = staticCompositionLocalOf { false }
         Column(Modifier.safeDrawingPadding()) {
             Row(Modifier.fillMaxWidth().padding(horizontal=24.dp,vertical=8.dp),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(16.dp)) {
                 Icon(Icons.Outlined.Lock,"Controls locked")
-                Text(if(preview) "Dock dashboard preview" else "Dock dashboard",style=MaterialTheme.typography.titleMedium)
-                if(host.dockTestActive) {
-                    Text("Assumed dock · test",style=MaterialTheme.typography.labelSmall)
-                    TextButton(onClick=host::endDockTest) { Text("End test") }
+                Column(Modifier.weight(1f)) {
+                    Text(if(preview) "Dock dashboard preview" else "Dock dashboard",style=MaterialTheme.typography.titleMedium,maxLines=1,overflow=TextOverflow.Ellipsis)
+                    if(host.dockTestActive) Text("Assumed dock · test",style=MaterialTheme.typography.labelSmall,maxLines=1)
                 }
-                Spacer(Modifier.weight(1f))
+                if(host.dockTestActive) {
+                    var menu by remember { mutableStateOf(false) }
+                    Box {
+                        IconButton(onClick={menu=true},modifier=Modifier.size(56.dp)) {Icon(Icons.Outlined.MoreVert,"Dock test options")}
+                        DropdownMenu(menu,{menu=false}) {DropdownMenuItem(text={Text("End test")},onClick={menu=false;host.endDockTest()})}
+                    }
+                }
                 if(preview) OutlinedButton(onClick={host.previewDashboard(false)},modifier=Modifier.heightIn(min=56.dp)) { Text("Exit preview") }
                 else {
                     Button(onClick=host::unlock,modifier=Modifier.heightIn(min=56.dp)) { Text("Unlock tablet") }
@@ -250,11 +265,8 @@ private val LocalDockReadOnly = staticCompositionLocalOf { false }
                 }
             }
             Text(if(vm.demo) "Design demo · sample devices · no audio playback" else if(vm.connected) "Home Assistant connected · unlock to control" else "Disconnected · displayed values may be stale",modifier=Modifier.padding(horizontal=24.dp),style=MaterialTheme.typography.labelMedium)
-            BoxWithConstraints(Modifier.weight(1f)) {
-                val wide=maxWidth>=840.dp
-                CompositionLocalProvider(LocalDockReadOnly provides true) {
-                    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(if(wide) 28.dp else 16.dp),verticalArrangement=Arrangement.spacedBy(20.dp)) { HomeScreen(vm,wide,clock,showMusic=host.showLockedMusic) }
-                }
+            CompositionLocalProvider(LocalDockReadOnly provides true) {
+                Box(Modifier.weight(1f)) { HomeOverview(vm,clock,showMusic=host.showLockedMusic) }
             }
         }
     }
@@ -311,12 +323,13 @@ private val Olive = Color(0xFF30372A)
                             TextButton({ vm.open(Page.SETTINGS) }) { Text("Settings") }
                         }
                         AnimatedContent(targetState = vm.page, label = "Page transition", modifier = Modifier.weight(1f)) { page ->
-                            Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(if (wide) 28.dp else 16.dp), verticalArrangement = Arrangement.spacedBy(20.dp)) {
+                            if(page == Page.HOME) HomeOverview(vm,clock)
+                            else Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(if (wide) 28.dp else 16.dp), verticalArrangement = Arrangement.spacedBy(20.dp)) {
                                 when (page) {
-                                    Page.HOME -> HomeScreen(vm, wide, clock)
                                     Page.MUSIC -> MusicScreen(vm, wide)
                                     Page.IDLE -> IdleScreen(vm, wide, clock)
                                     Page.SETTINGS -> SettingsScreen(vm)
+                                    Page.HOME -> Unit
                                 }
                             }
                         }
@@ -337,22 +350,7 @@ private val Olive = Color(0xFF30372A)
         Column(Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(12.dp), content = content)
     }
 }
-@Composable private fun HomeScreen(vm: HubViewModel, wide: Boolean, clock: LocalDateTime, showMusic: Boolean = true) {
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-        Title(vm.config.title, clock.format(DateTimeFormatter.ofPattern("EEEE, MMMM d")))
-        if (wide) Text(clock.format(DateTimeFormatter.ofPattern("h:mm")), fontSize = 38.sp)
-    }
-    Text("Favorites", style = MaterialTheme.typography.titleMedium)
-    if (wide) Row(horizontalArrangement = Arrangement.spacedBy(20.dp)) {
-        Column(Modifier.weight(1.3f), verticalArrangement = Arrangement.spacedBy(16.dp)) { DeviceGrid(vm, true); Scenes(vm) }
-        if(showMusic) PlayerCard(vm, Modifier.weight(1f))
-    } else {
-        if(showMusic) PlayerCard(vm)
-        DeviceGrid(vm, false); Scenes(vm)
-    }
-    if (vm.config.favorites.isEmpty()) Text("Add favorite entity IDs to your Home Assistant dashboard sensor.")
-}
-@Composable private fun DeviceGrid(vm: HubViewModel, wide: Boolean) {
+@Composable internal fun DeviceGrid(vm: HubViewModel, wide: Boolean) {
     vm.config.favorites.chunked(if (wide) 2 else 1).forEach { pair ->
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             pair.forEach { id -> DeviceTile(vm, id, Modifier.weight(1f)) }
@@ -360,7 +358,7 @@ private val Olive = Color(0xFF30372A)
         }
     }
 }
-@Composable private fun DeviceTile(vm: HubViewModel, id: String, modifier: Modifier) {
+@Composable internal fun DeviceTile(vm: HubViewModel, id: String, modifier: Modifier) {
     val entity = vm.entities[id]
     val domain = id.substringBefore('.')
     val enabled = !LocalDockReadOnly.current && vm.canControl && entity?.available == true
@@ -411,7 +409,7 @@ private val Olive = Color(0xFF30372A)
         }
     }
 }
-@Composable private fun AlbumArt(vm: HubViewModel, modifier: Modifier = Modifier) {
+@Composable internal fun AlbumArt(vm: HubViewModel, modifier: Modifier = Modifier) {
     val bitmap = vm.artwork
     Box(modifier.clip(RoundedCornerShape(24.dp)).background(MaterialTheme.colorScheme.surfaceVariant)) {
         if (bitmap != null) Image(bitmap.asImageBitmap(), "Current album artwork", Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
@@ -428,7 +426,7 @@ private val Olive = Color(0xFF30372A)
     Text(vm.player?.attrs?.optString("media_title")?.takeIf { it.isNotBlank() } ?: "Nothing playing", fontSize = if (large) 40.sp else 28.sp, fontWeight = FontWeight.Medium, maxLines = 2, overflow = TextOverflow.Ellipsis)
     Text(vm.player?.attrs?.optString("media_artist")?.takeIf { it.isNotBlank() } ?: "Select music to begin", style = MaterialTheme.typography.titleMedium)
 }
-@Composable private fun Transport(vm: HubViewModel, large: Boolean = false) {
+@Composable internal fun Transport(vm: HubViewModel, large: Boolean = false) {
     val p = vm.player
     val enabled = !LocalDockReadOnly.current && vm.canControl && p?.available == true
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
@@ -451,16 +449,16 @@ private val Olive = Color(0xFF30372A)
         Slider(value = draft, onValueChange = { dragging = true; draft = it }, onValueChangeFinished = { onCommit(draft); dragging = false }, enabled = enabled, modifier = Modifier.fillMaxWidth().semantics { contentDescription = label })
     }
 }
-@Composable private fun Volume(vm: HubViewModel) {
+@Composable internal fun Volume(vm: HubViewModel) {
     ValueSlider("Volume", vm.player?.attrs?.optDouble("volume_level", 0.0)?.toFloat() ?: 0f, !LocalDockReadOnly.current && vm.canControl && vm.player?.available == true && vm.player?.supports(4) == true) {
         vm.command(vm.selectedPlayer, "volume_set", JSONObject().put("volume_level", it.toDouble()))
     }
 }
-@Composable private fun SpeakerPicker(vm: HubViewModel) {
+@Composable internal fun SpeakerPicker(vm: HubViewModel) {
     var expanded by remember { mutableStateOf(false) }
     Box {
         OutlinedButton(onClick = { expanded = true }, enabled = !LocalDockReadOnly.current, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp)) {
-            Icon(Icons.Outlined.Speaker, null); Spacer(Modifier.width(10.dp)); Text(vm.player?.name ?: "Select speaker", Modifier.weight(1f)); Icon(Icons.Outlined.ExpandMore, null)
+            Icon(Icons.Outlined.Speaker, null); Spacer(Modifier.width(10.dp)); Text(vm.player?.name ?: "Select speaker", Modifier.weight(1f),maxLines=1,overflow=TextOverflow.Ellipsis); Icon(Icons.Outlined.ExpandMore, null)
         }
         DropdownMenu(expanded, onDismissRequest = { expanded = false }) {
             vm.config.players.forEach { id -> DropdownMenuItem(text = { Text(vm.entities[id]?.name ?: id) }, onClick = { vm.select(id); expanded = false }) }
@@ -553,9 +551,9 @@ private val Olive = Color(0xFF30372A)
     }
     Tile(Modifier.widthIn(max = 800.dp).fillMaxWidth()) {
         Text("Startup & lock screen", style = MaterialTheme.typography.titleLarge)
-        Text(if (host.isDefaultHome) "Pixel Home is your default Home app" else "Default Home app: another launcher")
-        Text("Choose Pixel Home as Android's Home app to open this interface when Android returns Home, including after startup and the first unlock.")
-        Button(onClick = host::makeHome, enabled = !host.isDefaultHome) { Text("Make Pixel Home my Home app") }
+        Text(if (host.isDefaultHome) "Hearthline is your default Home app" else "Default Home app: another launcher")
+        Text("Choose Hearthline as Android's Home app to open this interface when Android returns Home, including after startup and the first unlock.")
+        Button(onClick = host::makeHome, enabled = !host.isDefaultHome) { Text("Make Hearthline my Home app") }
         OutlinedButton(onClick = host::homeSettings) { Text("Change default Home app") }
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text("Show over lock screen", Modifier.weight(1f))
@@ -605,15 +603,15 @@ private val Olive = Color(0xFF30372A)
         Text("For automatic return, Android requires Display over other apps and a visible monitoring notification. Enable this while unlocked. It only opens the protected view after locking and when a dock is confirmed or the temporary local test is active; dismissing does not reopen it during that lock cycle.")
         OutlinedButton(onClick = host::overlaySettings, modifier = Modifier.heightIn(min = 56.dp)) { Text(if(host.overlayPermission) "Review automatic-return permission" else "Grant automatic-return permission") }
 
-        Text("Dismiss the protected view to use Android's lock screen, or choose Unlock controls to authenticate. When enabled, the next lock re-arms the view while docked. Without automatic return, this applies while Pixel Home is the foreground/Home activity. With the optional permission and monitor enabled, it can return from other apps only after locking. Android authentication remains required.")
+        Text("Dismiss the protected view to use Android's lock screen, or choose Unlock controls to authenticate. When enabled, the next lock re-arms the view while docked. Without automatic return, this applies while Hearthline is the foreground/Home activity. With the optional permission and monitor enabled, it can return from other apps only after locking. Android authentication remains required.")
         Text("All dock display preferences persist. With keep-awake off, Power wakes the screen normally. No PIN, lock bypass, boot auto-launch or vendor cloud service is used.", style = MaterialTheme.typography.bodySmall)
     }
     SendspinSettingsCard(LocalSendspinReceiver.current)
     HomeAssistantConnectionCard(vm)
     Tile(Modifier.widthIn(max = 800.dp).fillMaxWidth()) {
         Row(verticalAlignment = Alignment.CenterVertically) { Text("Hub mode", Modifier.weight(1f)); Switch(vm.hubEnabled, vm::hub) }
-        Text("Keeps Pixel Home awake while visible. Starts Music when the selected player begins playback; simplifies Music after ${vm.config.idleSeconds} seconds. This is independent of the dock-only lock-screen preference.")
+        Text("Keeps Hearthline awake while visible. Starts Music when the selected player begins playback; simplifies Music after ${vm.config.idleSeconds} seconds. This is independent of the dock-only lock-screen preference.")
         Row(verticalAlignment = Alignment.CenterVertically) { Text("Dark appearance", Modifier.weight(1f)); Switch(vm.dark, { vm.dark = it }) }
-        Text("If Pixel Home is your default Home app, the Home gesture returns here. Use Change default Home app above to restore your normal launcher. Dock presentation and automatic detection are configured above.")
+        Text("If Hearthline is your default Home app, the Home gesture returns here. Use Change default Home app above to restore your normal launcher. Dock presentation and automatic detection are configured above.")
     }
 }
