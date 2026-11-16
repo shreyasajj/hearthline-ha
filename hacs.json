@@ -1,0 +1,6 @@
+{
+  "name": "hearthline-ha",
+  "homeassistant": "2026.10.4",
+  "hide_default_branch": true,
+  "zip_release": false
+}

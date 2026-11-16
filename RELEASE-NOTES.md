@@ -1,9 +1,7 @@
-hearthline-ha 0.7.1 preview release for the separate Hearthline Android tablet app.
+hearthline-ha 0.7.2 adds HACS custom-repository installation.
 
-Includes HA config/options flows, entity-backed per-tablet dashboards, scoped revocable pairing and home controls, isolated display/template delivery, and opt-in Android telemetry receiver/entities. Retains the `pixel_home` domain and legacy sensor/YAML compatibility.
+Add https://github.com/shreyasajj/hearthline-ha in HACS → Custom repositories with type Integration, download hearthline-ha, restart Home Assistant, then add hearthline-ha under Settings → Devices & services. README.md has the complete installation and pairing guide. HACS installs only custom_components/pixel_home from the tested release tag; the separately downloadable pixel_home.zip is for manual installation.
 
-Install: download `pixel_home.zip`, verify its accompanying SHA-256 file, extract it into your HA configuration's `custom_components` folder, restart HA, then add **hearthline-ha** under Settings → Devices & services. Detailed setup and pairing instructions are in README.md and HEARTHLINE-SETUP.md. An Android-trusted HTTPS HA origin is required for tablet pairing. The separate tablet APK is not included in this HA release.
+Adds hacs.json, a local house icon, issue-tracker metadata, and official HACS validation in CI and the release gate. Public-repository branch protection now requires CI before changes reach main. Existing config entries, pixel_home service/domain identifiers and tablet pairing are preserved.
 
-The dependency merge workflow now automatically refreshes outdated bot branches and runs fresh CI before merging, including when another dependency update advances main.
-
-Release publishing requires the HA fixture suite, display/provider regressions and archive validation to pass for the exact source commit. Tested compatibility is HA 2026.10.4. This is a preview: clean trusted-HTTPS tablet onboarding/reconnect and physical dock acceptance remain unverified. No production HA deployment is performed.
+This is the normal HACS distribution channel, not a claim of completed live tablet acceptance: clean trusted-HTTPS onboarding/reconnect and physical dock interaction remain unverified. Tested compatibility is Home Assistant 2026.10.4. The Android APK belongs to the separate tablet project and is not included.

@@ -38,3 +38,8 @@ jobs:
         run: |
           python -m compileall -q custom_components
           python tools/package_integration.py
+      - name: Validate HACS custom repository
+        uses: hacs/action@1ebf01c408f29afcb6406bd431bc98fd8cbb15aa # main
+        with:
+          category: integration
+          comment: false

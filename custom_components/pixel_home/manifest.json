@@ -1,14 +1,17 @@
 {
   "domain": "pixel_home",
   "name": "hearthline-ha",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "documentation": "https://github.com/shreyasajj/hearthline-ha#installation",
-  "codeowners": ["@shreyasajj"],
+  "codeowners": [
+    "@shreyasajj"
+  ],
   "requirements": [],
   "dependencies": [
     "http"
   ],
   "iot_class": "local_push",
   "config_flow": true,
-  "integration_type": "device"
+  "integration_type": "device",
+  "issue_tracker": "https://github.com/shreyasajj/hearthline-ha/issues"
 }
