@@ -1,7 +1,7 @@
 {
   "domain": "pixel_home",
   "name": "hearthline-ha",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "documentation": "https://github.com/shreyasajj/hearthline-ha#installation",
   "codeowners": ["@shreyasajj"],
   "requirements": [],
