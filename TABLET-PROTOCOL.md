@@ -66,7 +66,7 @@ Dashboard fields are strictly checked on HA and Android. Favorites: at most 8 li
 
 ## Telemetry
 
-The complete required field set is in `tablet_contract.FIELDS`; every field is required, unknown fields are rejected. The shared valid fixture is `app/src/test/resources/tablet-telemetry.json`.
+The complete required field set is in `tablet_contract.FIELDS`; every field is required, unknown fields are rejected. The shared valid fixture is `tests/fixtures/tablet-telemetry.json (also copied in the tablet app test resources)`.
 
 | Field | Validation/meaning |
 |---|---|

@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
-PACKAGE=ROOT/'home-assistant/custom_components/pixel_home'
+PACKAGE=ROOT/'custom_components/pixel_home'
 # Load pure transport modules without importing HA-dependent integration setup.
 module=types.ModuleType('pixel_home'); module.__path__=[str(PACKAGE)]; sys.modules['pixel_home']=module
 from pixel_home.bridge import Bridge
@@ -86,7 +86,7 @@ class BridgeTests(unittest.TestCase):
     def native(self,kind='weather'):
         return json.loads((ROOT/f'display-contract/example-{kind}.json').read_text())
     def test_native_shared_corpus(self):
-        for f in json.loads((ROOT/'app/src/test/resources/template-fixtures.json').read_text()):
+        for f in json.loads((ROOT/'tests/fixtures/template-fixtures.json').read_text()):
             with self.subTest(f['name']):
                 if f['valid']: validate(f['request'])
                 else:
@@ -123,7 +123,7 @@ class BridgeTests(unittest.TestCase):
         r=self.render_native();self.bridge.update('session-1',r);self.now+=121
         self.assertFalse(self.bridge.update('session-1',r))
     def test_shared_payload_corpus(self):
-        fixtures=json.loads((ROOT/'app/src/test/resources/display-fixtures.json').read_text())
+        fixtures=json.loads((ROOT/'tests/fixtures/display-fixtures.json').read_text())
         for fixture in fixtures:
             with self.subTest(fixture['name']):
                 if fixture['valid']:validate(fixture['request'])

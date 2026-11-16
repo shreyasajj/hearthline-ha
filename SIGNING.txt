@@ -1,5 +1,0 @@
-Hearthline 0.7.0 development APKs
-Both APKs verified successfully using Android apksigner 36.0.0.
-Both use the same local Android debug certificate.
-Signer #1 certificate SHA-256 digest: c92c0189665984a0ab562b9f79435c15df8b4f1ccc0d3a105c822efbdaaf85f7
-No signing private key is included.

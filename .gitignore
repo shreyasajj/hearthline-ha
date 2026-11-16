@@ -1,15 +1,8 @@
-.gradle/
-.kotlin/
-**/build/
 .venv/
 .pytest_cache/
 **/__pycache__/
 *.pyc
-local.properties
+.DS_Store
+/dist/
 *.jks
 *.keystore
-
-# Local distribution artifacts (voice model ZIP under assets remains tracked).
-/*.zip
-/install/*.apk
-.DS_Store

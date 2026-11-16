@@ -89,7 +89,7 @@ async def test_isolation_and_command_bounds(hass,hass_client):
 
 
 def fixture():
-    return json.loads((Path(__file__).resolve().parents[1]/'app/src/test/resources/tablet-telemetry.json').read_text())
+    return json.loads((Path(__file__).resolve().parents[1]/'tests/fixtures/tablet-telemetry.json').read_text())
 
 @pytest.mark.parametrize('key,value',[('sequence',True),('battery_percent',101),('locked',1),('foreground',None),('power_source','AC'),('dock_evidence','manual_override'),('observed_at','2020-01-01T00:00:00Z'),('unexpected','secret')])
 def test_invalid_telemetry(key,value):

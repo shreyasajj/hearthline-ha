@@ -1,2 +1,0 @@
-e2512a9f8fa82a61fe4e3746714a66b6740c8e45f4624a0cd9f69e9c738a5d26  install/Hearthline-debug.apk
-c72a2e3b4ac17055c286b72cb05ed2ad97197f26ee119b0ffe8719e2bd99c348  install/Hearthline-preview.apk
