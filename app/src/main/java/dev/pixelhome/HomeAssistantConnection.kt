@@ -66,7 +66,7 @@ private fun Context.hostActivity(): MainActivity? = when(this) {
                 Switch(checked=draft.legacy,onCheckedChange={ draft.legacy=it })
                 Text("Legacy / manual dashboard sensor")
             }
-            if(!draft.legacy) Text("Add Hearthline in HA Settings → Devices & services. Choose entities, then authorize once below. The scoped tablet pairing is remembered encrypted on this device. The HA account token stays in memory and is cleared after pairing. Pairing permits selected entity reads, supported dashboard controls, display delivery and optional tablet telemetry.")
+            if(!draft.legacy) Text("Add hearthline-ha in HA Settings → Devices & services. Choose entities, then authorize once below. The scoped tablet pairing is remembered encrypted on this device. The HA account token stays in memory and is cleared after pairing. Pairing permits selected entity reads, supported dashboard controls, display delivery and optional tablet telemetry.")
             Text("On another screen: Home Assistant → your profile → Security → Long-lived access tokens → Create token → Generate QR code.")
             Text("Scan the token QR or choose its image. Enter your HTTPS server address separately; Home Assistant's token QR contains only the token.")
             OutlinedTextField(draft.url, { draft.url = it }, label = { Text("HTTPS server URL") }, placeholder = { Text("https://home.example.com") }, singleLine = true, modifier = Modifier.fillMaxWidth())

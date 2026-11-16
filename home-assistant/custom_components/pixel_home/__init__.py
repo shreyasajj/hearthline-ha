@@ -55,7 +55,7 @@ async def async_setup(hass, config):
     if options.get('llm_api',True):
         from .llm_api import DisplayAPI
         from homeassistant.helpers import llm
-        unregister=llm.async_register_api(hass,DisplayAPI(hass=hass,id='pixel_home',name='Pixel Home display'))
+        unregister=llm.async_register_api(hass,DisplayAPI(hass=hass,id='pixel_home',name='hearthline-ha legacy display'))
         hass.bus.async_listen_once('homeassistant_stop',lambda event: unregister())
     return True
 

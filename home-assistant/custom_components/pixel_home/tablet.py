@@ -54,7 +54,7 @@ async def setup_tablet(hass,entry):
     entry.async_on_unload(entry.add_update_listener(updated))
     from .llm_api import DisplayAPI
     from homeassistant.helpers import llm
-    entry.async_on_unload(llm.async_register_api(hass,DisplayAPI(hass=hass,id='pixel_home_'+entry.entry_id,name='Hearthline '+entry.title)))
+    entry.async_on_unload(llm.async_register_api(hass,DisplayAPI(hass=hass,id='pixel_home_'+entry.entry_id,name='hearthline-ha '+entry.title)))
     await hass.config_entries.async_forward_entry_setups(entry,['sensor','binary_sensor'])
     if entry.data.get('tablet_id'):
         from homeassistant.helpers import device_registry as dr

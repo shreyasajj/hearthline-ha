@@ -2,7 +2,7 @@
 
 A local Android home dashboard with integration-managed Home Assistant setup, remembered tablet pairing, and opt-in foreground tablet telemetry. This source fork lives in `pixel-table-ha`; the original `pixel-home` source is unchanged.
 
-The HA domain remains `pixel_home` and the Kotlin namespace remains `dev.pixelhome` to preserve the display/template APIs. No dashboard configuration sensor is required for the new pairing path. Protocols 1.0/1.1 and capability revision `pixel-home-0.4` remain unchanged.
+The Home Assistant integration is named **hearthline-ha** in Devices & services; the Android app is **Hearthline**. The HA domain remains `pixel_home` and the Kotlin namespace remains `dev.pixelhome` to preserve the display/template APIs. No dashboard configuration sensor is required for the new pairing path. Protocols 1.0/1.1 and capability revision `pixel-home-0.4` remain unchanged.
 
 Read [HEARTHLINE-SETUP.md](HEARTHLINE-SETUP.md) for installation, pairing, migration, permissions and first-push checks. [TABLET-PROTOCOL.md](TABLET-PROTOCOL.md) specifies authentication, schemas and lifecycle. [VALIDATION.md](VALIDATION.md) records current evidence and outstanding device acceptance. [examples/tablet.yaml](examples/tablet.yaml) contains status and automation examples.
 
