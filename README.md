@@ -6,7 +6,23 @@ The local integration folder is `pixel-table-ha`. The GitHub repository is [shre
 
 ## Installation
 
-1. Open [Releases](https://github.com/shreyasajj/hearthline-ha/releases) while signed into the GitHub account that can access this private repository. Download **`pixel_home.zip`** and **`pixel_home.zip.sha256`** from the newest preview release. Published release files are produced only after the release CI gate passes. This is a custom integration; it is not included in HA's default integration store.
+### HACS (recommended)
+
+[Open in HACS](https://my.home-assistant.io/redirect/hacs_repository/?owner=shreyasajj&repository=hearthline-ha&category=integration)
+
+1. Install and configure [HACS](https://www.hacs.xyz/docs/use/) in Home Assistant if needed.
+2. Open **HACS → ⋮ → Custom repositories**. Add `https://github.com/shreyasajj/hearthline-ha` and select **Integration** as the type.
+3. Find **hearthline-ha** in HACS and choose **Download**. Select version **0.7.2 or later**. Older 0.7.0/0.7.1 previews were published before HACS metadata was added.
+4. Restart Home Assistant, then open **Settings → Devices & services → Add integration → hearthline-ha**. Choose the actual entities for your tablet and follow the [pairing guide](HEARTHLINE-SETUP.md).
+5. For future updates, download the new version through HACS and restart HA. Keep your existing config entries and tablet pairing.
+
+This is a HACS **custom repository**; it has not been submitted to HACS's default catalog. HACS manages only `custom_components/pixel_home` from versioned release tags. The HA domain remains `pixel_home`; no second integration or migration to a new domain is created. Default-branch downloads are hidden so users select published, CI-validated releases. The separately downloadable `pixel_home.zip` below is for manual installation, not HACS's archive layout.
+
+If you already installed manually, back up your configuration, add the same repository in HACS, and download it over the existing `custom_components/pixel_home` folder. Restart HA. Do not remove the integration/config entries just to switch install methods. Minimum declared HA version is 2026.10.4, the version exercised by the test suite; later versions are not claimed tested.
+
+### Manual installation
+
+1. Open [Releases](https://github.com/shreyasajj/hearthline-ha/releases). Download **`pixel_home.zip`** and **`pixel_home.zip.sha256`** from the newest release. Published release files are produced only after the release CI gate passes. This is a custom integration; it is not included in HA's default integration store.
 2. Check the download before installing:
 
    ```sh
@@ -38,9 +54,9 @@ The **CI / CI gate** workflow runs on PRs and main updates. It installs the pinn
 
 Dependabot checks Python test dependencies and GitHub Actions weekly. A separate privileged workflow merges **only `dependabot[bot]` PRs** after successful PR CI, with matching current head/base commits. It never checks out PR code, never merges human-authored PRs, and requires a fresh successful CI run if the branch changes. When `main` advances, it refreshes the bot branch server-side and explicitly requests new CI before merging. All dependency update levels are eligible; failed CI blocks bot merging.
 
-**Repository limitation:** GitHub currently rejects required branch protection for this private repository on the account's plan. Normal manual merges therefore cannot be blocked by a required status check. Bot merges and releases explicitly gate their own operations on successful CI. The repository remains private; neither visibility nor billing is changed. If branch protection becomes available, require the unique status check **CI gate** on `main` and require branches to be current before merging.
+`main` is protected: PRs must pass **CI gate** and be current with the base branch before merging. This includes administrators; force pushes and branch deletion are disabled. The same CI gate now runs the official HACS repository validator without skipped checks.
 
-To publish another preview, change `manifest.json`'s version in a PR, update `RELEASE-NOTES.md`, and merge after CI passes. Under **Actions → Release → Run workflow**, select `main`. The release workflow reruns validation and publishes the exact tested commit as `v<manifest version>`, with `pixel_home.zip`, the full HA-only source ZIP and their SHA-256 files. Existing release versions are not overwritten. Do not install an untested run's files.
+To publish another version, change `manifest.json`'s version in a PR, update `RELEASE-NOTES.md`, and merge after CI passes. Under **Actions → Release → Run workflow**, select `main`. Leave **prerelease** off for the normal HACS channel; enable it only for preview builds. The release workflow reruns HA and HACS validation and publishes the exact tested commit as `v<manifest version>`, with `pixel_home.zip`, the full HA-only source ZIP and their SHA-256 files. Existing release versions are not overwritten. Do not install an untested run's files.
 
 The integration provides per-tablet config/options flows, versioned dashboard delivery, scoped revocable pairing, a closed set of authorized dashboard controls, private display/template sessions, and read-only tablet telemetry entities. Telemetry is sent by the Android app only when opted in and foreground; registering the HA integration alone does not establish live telemetry.
 
@@ -65,3 +81,7 @@ python3 -m venv .venv
 Run `python3 tools/package_integration.py` to build an HA-only source ZIP plus `dist/pixel_home.zip` for installation. Android build/package commands run from `../pixel-home`, independently of this repository.
 
 Live HTTPS tablet pairing/reconnect, physical dock attach/detach and clean-install acceptance remain outstanding. See [VALIDATION.md](VALIDATION.md) for the evidence and limits. No production HA deployment is performed by these scripts.
+
+## License
+
+[MIT](LICENSE).

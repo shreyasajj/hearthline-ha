@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 version = json.loads((ROOT / 'custom_components/pixel_home/manifest.json').read_text())['version']
 output = ROOT / 'dist' / f'hearthline-ha-{version}.zip'
 output.parent.mkdir(exist_ok=True)
-files = set(ROOT.glob('*.md')) | {ROOT / 'pytest.ini'}
+files = set(ROOT.glob('*.md')) | {ROOT / 'pytest.ini', ROOT / 'hacs.json', ROOT / 'LICENSE'}
 for folder in ('custom_components', 'display-contract', 'examples', 'tests', 'tools', 'validation'):
     files.update(p for p in (ROOT / folder).rglob('*') if p.is_file()
                  and '__pycache__' not in p.parts and p.suffix != '.pyc')
