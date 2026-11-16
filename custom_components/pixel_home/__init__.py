@@ -24,6 +24,9 @@ CONFIG_SCHEMA = schema.Schema({schema.Optional(DOMAIN): schema.Any(None, schema.
 }))}, extra=schema.ALLOW_EXTRA)
 
 async def async_setup(hass, config):
+    from .tablet import PairView, TabletView
+    hass.http.register_view(PairView())
+    hass.http.register_view(TabletView())
     options=config.get(DOMAIN) or {}
     bridge=Bridge(options.get('display_id','pixel_tablet'),area_name=options.get('area_name'))
     hass.data[DOMAIN]=bridge
@@ -33,13 +36,18 @@ async def async_setup(hass, config):
     async def handle(call):
         try:
             data=dict(call.data)
-            if call.service=='exchange': return bridge.exchange(data,call.context.user_id)
-            if data.get('display_id')!=bridge.display_id: raise ValueError('Unknown display')
-            if call.service=='get_screen_context': return bridge.context()
-            if call.service=='present_template': return providers.present(data['session_id'],data['capability_revision'],data['response_id'],data['intent'])
-            if call.service=='present_response': return bridge.present(data['session_id'],data['capability_revision'],data['request'])
-            if call.service=='get_response_status': return bridge.status(data['response_id'], data['session_id'])
-            if call.service=='dismiss_response': return bridge.dismiss(data['session_id'],data['response_id'])
+            target=data.get('display_id')
+            selected=next((t for t in hass.data.get('pixel_home_tablets',{}).values() if t.bridge.display_id==target),None)
+            active=selected.bridge if selected else bridge
+            active_providers=selected.providers if selected else providers
+            if selected and call.context.user_id != selected.entry.data.get('owner_id'): raise ValueError('Display owner authorization required')
+            if call.service=='exchange': return active.exchange(data,call.context.user_id)
+            if data.get('display_id')!=active.display_id: raise ValueError('Unknown display')
+            if call.service=='get_screen_context': return active.context()
+            if call.service=='present_template': return active_providers.present(data['session_id'],data['capability_revision'],data['response_id'],data['intent'])
+            if call.service=='present_response': return active.present(data['session_id'],data['capability_revision'],data['request'])
+            if call.service=='get_response_status': return active.status(data['response_id'], data['session_id'])
+            if call.service=='dismiss_response': return active.dismiss(data['session_id'],data['response_id'])
         except (KeyError,ValueError,TypeError) as err:
             raise ServiceValidationError(str(err)) from err
     for action in ('exchange','get_screen_context','present_response','present_template','get_response_status','dismiss_response'):
@@ -47,6 +55,17 @@ async def async_setup(hass, config):
     if options.get('llm_api',True):
         from .llm_api import DisplayAPI
         from homeassistant.helpers import llm
-        unregister=llm.async_register_api(hass,DisplayAPI(hass=hass,id='pixel_home',name='Pixel Home display'))
+        unregister=llm.async_register_api(hass,DisplayAPI(hass=hass,id='pixel_home',name='hearthline-ha legacy display'))
         hass.bus.async_listen_once('homeassistant_stop',lambda event: unregister())
     return True
+
+async def async_setup_entry(hass,entry):
+    from .tablet import setup_tablet
+    return await setup_tablet(hass,entry)
+
+async def async_unload_entry(hass,entry):
+    unloaded=await hass.config_entries.async_unload_platforms(entry,['sensor','binary_sensor'])
+    if unloaded:
+        tablet=hass.data['pixel_home_tablets'].pop(entry.entry_id)
+        tablet.invalidate(); tablet.providers.cancel()
+    return unloaded

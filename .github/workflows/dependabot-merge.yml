@@ -1,0 +1,57 @@
+name: Merge passing Dependabot updates
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+
+permissions:
+  actions: read
+  checks: read
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: dependabot-merge-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: false
+
+jobs:
+  merge:
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # No checkout or execution of pull-request code in this privileged workflow.
+      - name: Verify bot ownership, current commit and successful CI before merging
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          python3 - <<'PY'
+          import json, os, subprocess
+          def gh(*args):
+              return subprocess.check_output(['gh', *args], text=True)
+          def api(path):
+              return json.loads(gh('api', path))
+          repo=os.environ['REPO']
+          run=api(f'repos/{repo}/actions/runs/{os.environ["RUN_ID"]}')
+          if run['conclusion']!='success' or run['event']!='pull_request':
+              raise SystemExit('Not a successful PR CI run')
+          for reference in run['pull_requests']:
+              number=reference['number']
+              pr=api(f'repos/{repo}/pulls/{number}')
+              if pr['user']['login']!='dependabot[bot]' or pr['state']!='open' or pr['draft']:
+                  continue
+              if pr['base']['ref']!='main' or pr['head']['repo']['full_name']!=repo:
+                  continue
+              # A successful older run must never merge a newly updated PR head.
+              if reference['head']['sha']!=pr['head']['sha'] or run['head_sha']!=pr['head']['sha']:
+                  continue
+              if reference['base']['sha']!=api(f'repos/{repo}/git/ref/heads/main')['object']['sha']:
+                  continue
+              jobs=api(f'repos/{repo}/actions/runs/{run["id"]}/jobs?filter=latest')
+              if not any(j['name']=='CI gate' and j['conclusion']=='success' for j in jobs['jobs']):
+                  raise SystemExit('Required CI gate did not succeed')
+              gh('pr','merge',str(number),'--repo',repo,'--squash','--match-head-commit',pr['head']['sha'])
+          PY
