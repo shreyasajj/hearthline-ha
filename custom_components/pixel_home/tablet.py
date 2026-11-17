@@ -80,7 +80,7 @@ class PairView(HomeAssistantView):
     async def get(self,request):
         user=request['hass_user']
         if not user.is_admin: raise web.HTTPForbidden()
-        return self.json({'schema_version':1,'tablets':[{'entry_id':t.entry.entry_id,'name':t.definition['name'],'paired':bool(t.entry.data.get('credential_hash'))} for t in request.app['hass'].data.get('pixel_home_tablets',{}).values()]})
+        return self.json({'schema_version':1,'tablets':[{'entry_id':t.entry.entry_id,'name':t.definition['name'],'paired':bool(t.entry.data.get('credential_hash')),'tablet_id':t.entry.data.get('discovery',{}).get('tablet_id')} for t in request.app['hass'].data.get('pixel_home_tablets',{}).values()]})
     async def post(self,request):
         hass=request.app['hass']; user=request['hass_user']
         if not user.is_admin: raise web.HTTPForbidden()
@@ -88,6 +88,8 @@ class PairView(HomeAssistantView):
         if set(body)!={'entry_id','tablet_id','schema_version'} or type(body['schema_version']) is not int or body['schema_version']!=1 or not UUID.fullmatch(str(body['tablet_id'])): raise web.HTTPBadRequest()
         tablet=hass.data.get('pixel_home_tablets',{}).get(body['entry_id'])
         if tablet is None: raise web.HTTPNotFound()
+        expected=tablet.entry.data.get('discovery',{}).get('tablet_id')
+        if expected is not None and body['tablet_id']!=expected: raise web.HTTPForbidden(reason='This dashboard belongs to a different tablet')
         if tablet.entry.data.get('credential_hash'): raise web.HTTPConflict(reason='Revoke existing pairing in options first')
         if any(t is not tablet and t.entry.data.get('credential_hash') and t.entry.data.get('tablet_id')==body['tablet_id'] for t in hass.data['pixel_home_tablets'].values()): raise web.HTTPConflict()
         # Permission checks are repeated at each state read and control dispatch.

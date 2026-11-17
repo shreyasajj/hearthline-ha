@@ -20,6 +20,22 @@ This is a HACS **custom repository**; it has not been submitted to HACS's defaul
 
 If you already installed manually, back up your configuration, add the same repository in HACS, and download it over the existing `custom_components/pixel_home` folder. Restart HA. Do not remove the integration/config entries just to switch install methods. Minimum declared HA version is 2026.10.4, the version exercised by the test suite; later versions are not claimed tested.
 
+### Find a tablet automatically or by IP
+
+Install tablet APK **0.7.3 or later** from the separate `pixel-home` project. Keep the app visible on private Wi-Fi/Ethernet and leave **Allow HA to discover this tablet while visible** enabled in its Home Assistant settings. The tablet shows its IP and installation ID. Older APKs do not advertise the new discovery service.
+
+HA's Zeroconf integration will show a discovered **hearthline-ha** tablet. Confirm its IP/installation ID, choose the dashboard entities, then finish the existing HTTPS/account authorization **on the tablet**. Discovery identifies a candidate; it never authorizes controls or automatically pairs it.
+
+If nothing appears, choose **Settings → Devices & services → Add integration → hearthline-ha** and enter **Tablet IP address (optional manual fallback)**. Use an IPv4 private address such as `192.168.20.55`, or a routed IPv6 ULA; do not enter a URL. Keep the tablet app visible during this check. An empty IP retains the existing manual dashboard setup for legacy clients.
+
+For separate VLANs:
+
+- Allow **HA → tablet TCP 8787** for the read-only identity probe. This port never accepts HA tokens, commands or settings.
+- Automatic discovery needs mDNS forwarding/reflecting for **`_hearthline._tcp.local.`** between the intended networks. Multicast does not ordinarily cross a VLAN/router boundary; HACS cannot change your router or firewall. If forwarding is unavailable, use the tablet IP field.
+- Allow the existing **tablet → HTTPS HA origin** route for pairing, dashboard controls and telemetry. TLS certificate/origin validation remains required; entering a tablet IP does not weaken HA authentication.
+
+Discovery pauses when the activity pauses; no new background service or screen wake is added. The listener binds only a private Wi-Fi/Ethernet address, and restarts after network changes while visible. If Android/GrapheneOS network controls block incoming connections, the probe reports failure. Disable the local discovery toggle to close both mDNS advertising and TCP identification. Paired tablets continue their existing outbound HA connection independently of this toggle. Discovery does not create an always-online or dock state.
+
 ### Manual installation
 
 1. Open [Releases](https://github.com/shreyasajj/hearthline-ha/releases). Download **`pixel_home.zip`** and **`pixel_home.zip.sha256`** from the newest release. Published release files are produced only after the release CI gate passes. This is a custom integration; it is not included in HA's default integration store.

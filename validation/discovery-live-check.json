@@ -1,0 +1,11 @@
+{
+  "tablet_app_version": "0.7.3",
+  "preview_update_preserved_data": true,
+  "mdns_observed": true,
+  "real_http_identity_validation": true,
+  "responder_closed_on_pause": true,
+  "production_app_restored": true,
+  "ha_instance_deployment": false,
+  "routed_vlan_acceptance": false,
+  "authenticated_onboarding_acceptance": false
+}

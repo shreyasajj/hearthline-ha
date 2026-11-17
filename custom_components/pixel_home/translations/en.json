@@ -4,7 +4,7 @@
     "step": {
       "user": {
         "title": "Configure tablet dashboard",
-        "description": "Select real entities. Then pair from Hearthline using an HTTPS server and administrator authorization.",
+        "description": "Choose dashboard entities. If the tablet was not discovered, enter its private IP while the updated app is visible. Across VLANs allow TCP 8787; multicast discovery needs an mDNS reflector. Leave IP empty for existing manual tablet setup. Pairing still requires HTTPS HA authorization on the tablet.",
         "data": {
           "name": "Tablet name",
           "area_id": "Area",
@@ -20,12 +20,24 @@
           "journey_endpoint": "Optional fixed HTTPS Journey adapter endpoint",
           "home_origin": "Optional configured Journey origin",
           "journey_token": "Optional Journey adapter token",
-          "journey_traffic": "Journey provider supports traffic"
+          "journey_traffic": "Journey provider supports traffic",
+          "tablet_host": "Tablet IP address (optional manual fallback)"
         }
+      },
+      "confirm": {
+        "title": "Discovered Hearthline tablet",
+        "description": "Found {name} at {host}. Installation ID: {tablet_id}. Compare it with the tablet Settings screen. Discovery is untrusted identification, not pairing. Continue to choose dashboard entities, then authorize pairing on the tablet."
       }
     },
     "error": {
-      "invalid_selection": "Choose existing supported entities and valid bounded settings."
+      "invalid_selection": "Choose existing supported entities and valid bounded settings.",
+      "cannot_connect": "Could not identify the tablet. Use its private IP, keep the updated app visible with discovery enabled, and allow TCP 8787 between VLANs."
+    },
+    "flow_title": "{name}",
+    "abort": {
+      "already_configured": "This tablet is already configured. Use its existing dashboard entry.",
+      "invalid_discovery": "Unsupported or invalid tablet discovery data.",
+      "cannot_connect": "Could not identify the discovered tablet. Keep the updated app visible or add the integration with its private IP."
     }
   },
   "options": {
