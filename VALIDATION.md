@@ -17,3 +17,13 @@ A successful fixture test is not live onboarding acceptance. Still outstanding: 
 HA config-entry reload is covered; a separate HA process/storage restart and Android lifecycle instrumentation are not live-acceptance tested. Provisioning QR/discovery is not implemented; explicit manual HTTPS server setup is supported. Official HA raw-token QR and Sendspin SP:0 are distinct tablet-side flows.
 
 Availability is based on server receipt time, defaults to 120 seconds, is configurable to 60–900 seconds and is evaluated every 15 seconds. Missing telemetry becomes unavailable rather than undocked/unlocked/zero battery. Last-seen and app-version diagnostics start disabled. The Android sender's activity-only lifecycle is documented in TABLET-PROTOCOL.md and implemented in the separate tablet project.
+
+## Tablet discovery update
+
+HA 0.7.3 adds Zeroconf identification, an optional private-IP flow field and installation binding. Discovery coverage includes malformed TXT/metadata, redirects, oversized payloads, public/loopback/link-local targets, duplicate existing tablets, manual IP setup, confirmation and wrong-tablet pairing rejection. HACS remains in the required CI gate. The corresponding Android responder/advertiser is implemented only in the sibling pixel-home app and requires its updated APK.
+
+Automatic mDNS visibility across the user's VLAN boundaries and a routed HA-instance probe must be verified against the actual router/firewall configuration; no reflector/firewall rule or production HA deployment is configured by this change. Discovery never establishes live telemetry or home-control authorization.
+
+Live preview-device check: the updated Android 0.7.3 preview was installed without clearing its data on the connected unlocked tablet. A LAN mDNS browser observed the expected service; the production identity validator accepted a real HTTP response with only the four identity fields. The probe used a real aiohttp transport with the HA session factory substituted in a standalone harness (not a deployed HA instance). Returning the production tablet app to the foreground paused the preview and closed its TCP listener. No Home-role change or home command was sent. This is same-LAN discovery/probe evidence, not routed VLAN or authenticated onboarding acceptance.
+
+Current local checks: 58 pytest cases and 45 display/provider regressions pass. Android unit tests, assembly and lint pass in the separate tablet project.
