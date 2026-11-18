@@ -112,3 +112,8 @@ Live HTTPS tablet pairing/reconnect, physical dock attach/detach and clean-insta
 ## Pair a tablet with a code (0.7.5)
 
 Open the tablet's entry → **Configure → Pair a tablet with a code**. HA shows an 8-digit code; type it into Hearthline Settings on the tablet together with your HTTPS HA address. The code is held in memory only, works once, expires after 5 minutes and pairs as the administrator who opened it. Wrong codes count as failed logins (and IP bans, if enabled); after 10 wrong codes in 5 minutes every open code is withdrawn. Requires tablet app 0.7.5. Token pairing still works for older apps.
+
+
+## Edit the tablet Home page (0.7.6)
+
+With Hearthline Android 0.7.11, tap **Edit Home** on the unlocked tablet to search real HA entities, change the title, and select/reorder favorite devices, scenes and available media players. Saves persist in this tablet's integration entry and refresh its live stream. Other dashboard/provider settings are preserved. The paired owner must remain an active HA administrator; offered entities also require read and control permissions. Concurrent edits return a reload conflict instead of overwriting one another. See [the editor protocol](TABLET-PROTOCOL.md#home-editor-integration-076--tablet-0711) for delegated credential scope and bounds. Install this integration update and restart HA before using the new tablet editor; existing paired credentials remain valid.
