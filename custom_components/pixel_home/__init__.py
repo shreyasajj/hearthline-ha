@@ -24,8 +24,9 @@ CONFIG_SCHEMA = schema.Schema({schema.Optional(DOMAIN): schema.Any(None, schema.
 }))}, extra=schema.ALLOW_EXTRA)
 
 async def async_setup(hass, config):
-    from .tablet import PairView, TabletView
+    from .tablet import PairView, PairCodeView, TabletView
     hass.http.register_view(PairView())
+    hass.http.register_view(PairCodeView())
     hass.http.register_view(TabletView())
     options=config.get(DOMAIN) or {}
     bridge=Bridge(options.get('display_id','pixel_tablet'),area_name=options.get('area_name'))

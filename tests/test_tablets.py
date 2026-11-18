@@ -31,6 +31,8 @@ async def test_flow_and_options(hass):
     await hass.async_block_till_done()
     entry=result['result']
     result=await hass.config_entries.options.async_init(entry.entry_id)
+    assert result['type']=='menu' and result['menu_options']==['dashboard','pair_code']
+    result=await hass.config_entries.options.async_configure(result['flow_id'],{'next_step_id':'dashboard'})
     result=await hass.config_entries.options.async_configure(result['flow_id'],dict(DEFINITION,favorites=[]))
     assert result['type']=='create_entry'
     await hass.async_block_till_done()

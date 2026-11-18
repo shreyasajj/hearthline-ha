@@ -43,6 +43,13 @@
   "options": {
     "step": {
       "init": {
+        "title": "Hearthline tablet",
+        "menu_options": {
+          "dashboard": "Edit dashboard and pairing",
+          "pair_code": "Pair a tablet with a code"
+        }
+      },
+      "dashboard": {
         "title": "Dashboard and pairing",
         "data": {
           "name": "Tablet name",
@@ -61,10 +68,21 @@
           "journey_token": "Optional Journey adapter token",
           "journey_traffic": "Journey provider supports traffic"
         }
+      },
+      "pair_code": {
+        "title": "Pairing code",
+        "description": "On the tablet, open Hearthline Settings, choose **Pair with a code** and enter:\n\n## {code}\n\nThe code works once and expires in {minutes} minutes. It pairs as your account. Expected tablet: {tablet_id}. Select Submit after the tablet says it is paired."
       }
     },
     "error": {
       "invalid_selection": "Choose existing supported entities and valid bounded settings."
+    },
+    "abort": {
+      "not_loaded": "The entry is not loaded. Reload it and try again.",
+      "already_paired": "This entry is already paired. Revoke the pairing in Edit dashboard and pairing first.",
+      "admin_required": "Open this from the Home Assistant web interface as an administrator.",
+      "paired": "Tablet paired.",
+      "code_closed": "Closed. The code stays valid until it expires or is used."
     }
   }
 }

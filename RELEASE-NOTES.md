@@ -1,7 +1,13 @@
-hearthline-ha 0.7.3 adds tablet network discovery and a private IP fallback.
+hearthline-ha 0.7.5 adds pairing with a one-time code.
 
-With tablet APK 0.7.3 or later visible on private Wi-Fi/Ethernet, HA discovers `_hearthline._tcp.local.` and confirms the installation ID before dashboard configuration. If multicast is unavailable or blocked across VLANs, manually add hearthline-ha and enter the tablet IP. Allow HA → tablet TCP 8787; mDNS needs a reflector for automatic discovery across VLAN boundaries. Router/firewall settings are not changed automatically.
+In the tablet's entry, **Configure** now opens a menu: **Edit dashboard and pairing** (the previous form) or **Pair a tablet with a code**. The code replaces the long-lived admin token on the tablet: 8 digits, single use, 5-minute expiry, memory only, bound to the discovered installation ID when there is one, and owned by the administrator who opened it. New endpoint `POST /api/pixel_home/pair/code`; wrong codes go through HA's failed-login handling, and 10 wrong codes in 5 minutes withdraw every open code. Requires tablet app 0.7.5; older apps keep token pairing. Six new tests (72 in total).
 
-Discovery is a bounded, read-only identification channel with no HA credentials, commands, permissions or background service. Pairing still requires HTTPS HA origin/account authorization on the tablet. Existing paired/manual entries remain supported. The Android update belongs in the separate pixel-home project; older APKs cannot be discovered merely by installing this HA release.
+hearthline-ha 0.7.4 pushes state changes to paired tablets.
 
-The new discovery/config-flow, invalid-target/redirect/payload and cross-tablet pairing tests run with existing HA, HACS and display/provider gates. Full trusted-HTTPS onboarding and routed VLAN acceptance still require live network/user configuration; see VALIDATION.md.
+Tablet APK 0.7.4 opens a read-only WebSocket (`/api/pixel_home/tablet/{entry_id}/stream`) while it is visible. HA sends a snapshot of the dashboard configuration and selected entity states, then each state change as it happens, instead of the tablet polling every two seconds. The stream uses the existing scoped tablet credential, the same entity selection and the owner's read permission. HA closes it on revocation, unpair, options change or reload, and the tablet reconnects for a fresh snapshot.
+
+When a streaming tablet leaves the foreground, its telemetry entities become unavailable about 10 seconds later instead of after the 120-second heartbeat timeout.
+
+Compatibility: older tablet APKs keep polling and are unaffected. Tablet 0.7.4 with an older integration falls back to polling. See TABLET-PROTOCOL.md ("Push stream") for limits and close codes.
+
+Validation: eight new HA tests cover snapshot and change delivery, selection filtering, credential checks, the read-only rule, the per-entry limit, ping, revocation, owner removal during a busy stream, options reload, shutdown and the availability grace period (66 tests in total). The stream has not yet been exercised against a live HA server with the tablet; see VALIDATION.md.

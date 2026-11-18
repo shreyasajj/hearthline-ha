@@ -36,6 +36,13 @@ For separate VLANs:
 
 Discovery pauses when the activity pauses; no new background service or screen wake is added. The listener binds only a private Wi-Fi/Ethernet address, and restarts after network changes while visible. If Android/GrapheneOS network controls block incoming connections, the probe reports failure. Disable the local discovery toggle to close both mDNS advertising and TCP identification. Paired tablets continue their existing outbound HA connection independently of this toggle. Discovery does not create an always-online or dock state.
 
+With tablet APK 0.7.4 or later, discovery also stops once the tablet is paired, because HA already knows it; forgetting the server on the tablet makes it discoverable again.
+
+### Live state updates (0.7.4)
+
+A paired tablet running APK 0.7.4 or later keeps a read-only WebSocket open to HA while it is visible, so state changes appear on the tablet as they happen rather than on a two-second poll. It travels over the same tablet → HTTPS HA route; no new firewall rule is needed. If a reverse proxy sits in front of HA, it must allow WebSocket upgrades on `/api/pixel_home/tablet/…/stream` (HA's own frontend already needs this). Without it, the tablet falls back to polling. Details are in TABLET-PROTOCOL.md ("Push stream").
+
+
 ### Manual installation
 
 1. Open [Releases](https://github.com/shreyasajj/hearthline-ha/releases). Download **`pixel_home.zip`** and **`pixel_home.zip.sha256`** from the newest release. Published release files are produced only after the release CI gate passes. This is a custom integration; it is not included in HA's default integration store.
@@ -101,3 +108,7 @@ Live HTTPS tablet pairing/reconnect, physical dock attach/detach and clean-insta
 ## License
 
 [MIT](LICENSE).
+
+## Pair a tablet with a code (0.7.5)
+
+Open the tablet's entry → **Configure → Pair a tablet with a code**. HA shows an 8-digit code; type it into Hearthline Settings on the tablet together with your HTTPS HA address. The code is held in memory only, works once, expires after 5 minutes and pairs as the administrator who opened it. Wrong codes count as failed logins (and IP bans, if enabled); after 10 wrong codes in 5 minutes every open code is withdrawn. Requires tablet app 0.7.5. Token pairing still works for older apps.
