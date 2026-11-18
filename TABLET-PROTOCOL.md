@@ -4,7 +4,7 @@ The existing `pixel_home` domain hosts the new local channel. The existing gener
 
 ## Authentication and storage
 
-All Android connections require an explicit HTTPS origin with platform certificate validation. No path, userinfo, query, fragment or credential-forwarding redirect is accepted. No QR-selected URL is fetched. The supported onboarding mechanism is manual server entry plus HA's existing account-token authentication; provisioning QR and Android-side HA server discovery are not implemented. HA-side tablet identification is described below. The official raw HA token QR importer and Sendspin SP:0 retain distinct behavior.
+All Android connections require an explicit HTTPS origin with platform certificate validation. No path, userinfo, query, fragment or credential-forwarding redirect is accepted. No QR-selected URL is fetched. The supported onboarding mechanism is manual server entry plus either a one-time pairing code issued by an HA administrator (0.7.5+, preferred) or HA's existing account-token authentication; provisioning QR and Android-side HA server discovery are not implemented. HA-side tablet identification is described below. The official raw HA token QR importer and Sendspin SP:0 retain distinct behavior.
 
 `GET /api/pixel_home/pair` requires normal HA bearer authentication and an administrator. Response:
 
@@ -18,7 +18,26 @@ All Android connections require an explicit HTTPS origin with platform certifica
 {"schema_version":1,"entry_id":"HA_ENTRY_ID","tablet_id":"10000000-0000-4000-8000-000000000001"}
 ```
 
-Returns `{schema_version:1, entry_id, display_id, credential}`. Credential is a random 48-byte URL-safe secret, returned only once. HA stores its SHA-256 hash and authorizing user ID in the versioned config entry, alongside the installation UUID. Pairing fails with 409 if the entry or installation already has an active pairing. A revoked installation may pair again. There is no challenge replay surface because there is no provisioning envelope or unauthenticated pairing step.
+Returns `{schema_version:1, entry_id, display_id, credential}`. Credential is a random 48-byte URL-safe secret, returned only once. HA stores its SHA-256 hash and authorizing user ID in the versioned config entry, alongside the installation UUID. Pairing fails with 409 if the entry or installation already has an active pairing. A revoked installation may pair again. Token pairing has no unauthenticated step; code pairing is the bounded exception described below.
+
+### Pairing with a code (HA 0.7.5 / tablet 0.7.5)
+
+The preferred onboarding path needs no account token on the tablet. An administrator opens the entry's **Configure → Pair a tablet with a code** in the HA web interface. HA generates an 8-digit code with `secrets`, keeps it in memory only (never in the config entry), and records the administrator viewing the form as the future owner. HA refuses to issue a code when it cannot identify an administrator request, or when the entry is already paired.
+
+`POST /api/pixel_home/pair/code` (`requires_auth=False`; the code is the authorization) takes exactly:
+
+```json
+{"schema_version":1,"tablet_id":"10000000-0000-4000-8000-000000000001","code":"12345678"}
+```
+
+Hyphens and spaces in the code are ignored. On success it returns the same `{schema_version:1, entry_id, display_id, credential}` as token pairing, with the same checks: a discovered entry accepts only its discovered installation ID (403), and an already paired entry or installation returns 409. Rules:
+
+- A code works once. It is withdrawn when it matches, whatever the outcome, and also on pairing, revocation, unpair and entry reload.
+- A code expires after 5 minutes.
+- At the time of pairing the issuing administrator must still be active and still an administrator (401 otherwise).
+- Every wrong code returns 401 and is recorded through HA's standard failed-login handling, which IP-bans if `ip_ban_enabled` is configured. After 10 wrong codes across all entries in 5 minutes, every open code is withdrawn and the endpoint returns 429 until the window passes.
+
+With 10^8 codes and at most 10 guesses per open code, the chance of guessing one is about 1 in 10^7. Token pairing (`POST /api/pixel_home/pair`) remains available as an advanced fallback.
 
 Android stores `{origin, entry_id, credential, telemetry}` together encrypted using AES-GCM (random IV, fixed version/type AAD), a dedicated Android Keystore key and AtomicFile under `noBackupFilesDir`. Installation UUID is generated locally, independent of hardware identifiers. Backup/transfer is additionally disabled in the existing app manifest/extraction rules. No HA account token is persisted or sent to the tablet endpoint. No Sendspin key/PSK is reused. Key loss produces a forget/re-pair state.
 
@@ -30,6 +49,7 @@ Every following request supplies `Authorization: Bearer <scoped credential>` to 
 |---|---|---|
 | GET config | none | Versioned definition below |
 | GET states | none | Standard HA state objects, restricted to selected entities and owner read permissions |
+| GET stream | WebSocket upgrade, nothing sent by the tablet | Push stream of the same entities (0.7.4+); see below |
 | GET artwork | `entity_id` query only | Bounded media image for a configured player with read permission; no caller-supplied URL |
 | POST session | `{}` | `{schema_version:1, session_id:<server UUID>}`; invalidates previous telemetry session |
 | POST telemetry | Strict telemetry object below | `{accepted:true}` |
@@ -93,9 +113,28 @@ Maximum JSON request size 8 KiB, no arbitrary nested diagnostics. Raw audio, ima
 
 Each new foreground sender session requests a server UUID; old sessions, mismatched tablet IDs, duplicate/out-of-order sequences and timestamps outside tolerance cannot replace state. No telemetry survives HA restart, reload or revocation; Android starts a fresh session after restart or failed telemetry. Receipt time alone controls availability. Sequence/observation time are not state attributes. Last seen/app version are disabled diagnostics by default; unchanged sensor states do not generate changing heartbeat attributes.
 
+## Push stream (HA 0.7.4 / tablet 0.7.4)
+
+`GET /api/pixel_home/tablet/{entry_id}/stream` upgrades to a WebSocket using the same scoped credential. It lets the tablet show state changes as they happen instead of polling every two seconds. Messages are JSON text frames from HA:
+
+| `type` | Fields | Meaning |
+|---|---|---|
+| `snapshot` | `schema_version:1`, `config` (exactly the `GET config` body), `states` (exactly the `GET states` body) | Always the first message. |
+| `state` | `state` (one HA state object) | A selected entity changed. |
+| `removed` | `entity_id` | A selected entity was removed from HA. |
+| `ping` | none | Sent after ten idle seconds. The tablet treats 30 silent seconds as a dead socket. |
+
+The stream carries only the selected entities, filtered by the owner's current read permission, the same as `GET states`. It is read-only: any text or binary frame from the tablet closes the socket (1003). At most four streams per entry are accepted (429 after that). A reader too slow to drain 256 queued messages is closed (1013) and resynchronises from a new snapshot. HA closes every stream for an entry on revocation, unpair, options change, reload or unload, and re-checks the owner account and credential at least every 10 seconds, busy or idle (1008 on failure). HA closes with 1012 on reload and 1001 on shutdown, and with 1011 if it fails to send; the tablet reconnects and receives a fresh snapshot with the new revision.
+
+Availability: when the last stream for an entry closes, HA waits 10 seconds for a reconnect. If none arrives, telemetry is withdrawn (entities become unavailable and **Telemetry connected** turns off) and the telemetry session is fenced, so the tablet must request a new session. Tablets that never open a stream keep the existing heartbeat-timeout behaviour.
+
+Android behaviour: while visible, a paired tablet keeps one stream open. If HA answers 404 (an integration older than 0.7.4) it polls, and checks again every ten minutes. If the stream fails for another reason it polls meanwhile, and after three failures in a row retries the stream once a minute. 401/403 is handled exactly like the same status on any other endpoint. Commands are not sent on the stream; after a command the resulting state arrives on the stream, so no extra fetch is made.
+
+Telemetry is sampled every second and pushed only when it differs from the last accepted push, or after 30 seconds unchanged. Telemetry failures never mark the dashboard offline; the tablet starts a fresh session on the next attempt with exponential backoff up to 30 seconds.
+
 ## Android scheduling and lifecycle
 
-The existing activity resumed/paused policy controls polling and sending. Foreground config/state refresh is every two seconds. At most one latest telemetry observation is sampled per refresh; unchanged values produce a heartbeat every 30 seconds. There is no offline queue/history. Failed polling uses exponential delay 4/8/16/32/60 seconds plus 0..999ms jitter; connection/read/call timeouts are 8/10/15 seconds. Pause cancels the loop, although a blocking in-flight HTTP operation can finish before its timeout. No WorkManager job, new service, boot receiver, remote wake, permission change or automatic activity launch was added.
+The existing activity resumed/paused policy controls polling and sending. Paired tablets use the push stream above while visible; legacy connections, and paired tablets whose integration has no stream, refresh config and state every two seconds. Telemetry is sampled every second, independently of state sync; unchanged values produce a heartbeat every 30 seconds. There is no offline queue/history. Failed polling uses exponential delay 4/8/16/32/60 seconds plus 0..999ms jitter; connection/read/call timeouts are 8/10/15 seconds. Pause cancels the loop, although a blocking in-flight HTTP operation can finish before its timeout. No WorkManager job, new service, boot receiver, remote wake, permission change or automatic activity launch was added.
 
 Availability timeout defaults to 120 seconds, configurable to 60..900 and evaluated every 15 seconds. Measurements become unavailable and connection becomes off after expiry. On 401/403 the app stops polling and private display exchange and presents reauthorization; it never silently presents demo as live. Manual reconnect retries current authorization; explicit pairing is required after revocation. Auto reconnect changes neither Android authentication nor Home role or the separate user-enabled dock-return watcher.
 

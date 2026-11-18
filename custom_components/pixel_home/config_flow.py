@@ -101,6 +101,9 @@ class Flow(config_entries.ConfigFlow, domain=DOMAIN):
 
 class Options(config_entries.OptionsFlow):
     async def async_step_init(self,user_input=None):
+        return self.async_show_menu(step_id='init',menu_options=['dashboard','pair_code'])
+
+    async def async_step_dashboard(self,user_input=None):
         errors={}
         if user_input is not None:
             try:
@@ -110,4 +113,20 @@ class Options(config_entries.OptionsFlow):
                     if area_registry.async_get(self.hass).async_get_area(user_input['area_id']) is None: raise ValueError('Unknown area')
                 return self.async_create_entry(title='',data=user_input)
             except (ValueError,TypeError,KeyError): errors['base']='invalid_selection'
-        return self.async_show_form(step_id='init',data_schema=form(user_input or self.config_entry.options or self.config_entry.data['definition'],True),errors=errors)
+        return self.async_show_form(step_id='dashboard',data_schema=form(user_input or self.config_entry.options or self.config_entry.data['definition'],True),errors=errors)
+
+    async def async_step_pair_code(self,user_input=None):
+        from .tablet import CODE_TTL_SECONDS
+        tablet=self.hass.data.get('pixel_home_tablets',{}).get(self.config_entry.entry_id)
+        if tablet is None: return self.async_abort(reason='not_loaded')
+        if self.config_entry.data.get('credential_hash'): return self.async_abort(reason='already_paired')
+        if user_input is not None:
+            return self.async_abort(reason='paired' if self.config_entry.data.get('credential_hash') else 'code_closed')
+        # The code pairs as the administrator viewing this form, the same owner a token pairing records.
+        from homeassistant.helpers.http import current_request
+        request=current_request.get(); user=request.get('hass_user') if request is not None else None
+        if user is None or not user.is_admin: return self.async_abort(reason='admin_required')
+        code=tablet.issue_code(user.id)
+        return self.async_show_form(step_id='pair_code',data_schema=vol.Schema({}),description_placeholders={
+            'code':code[:4]+'-'+code[4:],'minutes':str(CODE_TTL_SECONDS//60),
+            'tablet_id':self.config_entry.data.get('discovery',{}).get('tablet_id','any Hearthline tablet')})

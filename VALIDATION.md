@@ -26,4 +26,16 @@ Automatic mDNS visibility across the user's VLAN boundaries and a routed HA-inst
 
 Live preview-device check: the updated Android 0.7.3 preview was installed without clearing its data on the connected unlocked tablet. A LAN mDNS browser observed the expected service; the production identity validator accepted a real HTTP response with only the four identity fields. The probe used a real aiohttp transport with the HA session factory substituted in a standalone harness (not a deployed HA instance). Returning the production tablet app to the foreground paused the preview and closed its TCP listener. No Home-role change or home command was sent. This is same-LAN discovery/probe evidence, not routed VLAN or authenticated onboarding acceptance.
 
-Current local checks: 58 pytest cases and 45 display/provider regressions pass. Android unit tests, assembly and lint pass in the separate tablet project.
+Checks at 0.7.3: 58 pytest cases and 45 display/provider regressions pass. Android unit tests, assembly and lint pass in the separate tablet project.
+
+## Push stream update (0.7.4)
+
+`tests/test_stream.py` adds eight cases using HA's real HTTP/WebSocket test client: snapshot equals `GET config`/`GET states`, only selected entities are delivered (an unselected state change is never sent), removal, anonymous and wrong-credential refusal (401), the read-only rule (a tablet frame closes the socket), the per-entry limit (429), idle ping, unpair closing an open stream and refusing a new one, options change closing the stream with the next snapshot carrying the new revision, the 10-second availability grace with telemetry session fencing, a removed owner closing a stream that never goes idle (1008), and HA shutdown closing open streams (1001).
+
+Local checks on November 17, 2026: 66 pytest cases pass (Python 3.14.10, `pytest-homeassistant-custom-component` from `tests/requirements.txt`, HA 2026.10.4), three consecutive runs.
+
+Not yet exercised: the tablet holding the stream against a live HA server over Android-trusted HTTPS, and behaviour behind a reverse proxy. The Android client side is covered by unit tests for message parsing; see the tablet project's VALIDATION.md.
+
+## 0.7.5 — pairing with a code
+
+`tests/test_pair_code.py` adds six cases using HA's real HTTP flow API, as the frontend drives it: the code pairs once as the administrator who opened the form; the credential works and the code cannot be reused after unpair; a discovered entry rejects another installation ID (403) and spends the code; expired and malformed codes (letters, bad UUID, missing or extra fields, boolean schema) are refused; 10 wrong guesses withdraw every open code and return 429; a flow with no administrator request issues no code; a code from a since-deactivated administrator is refused. The options test now goes through the new menu. **72 pytest cases pass**, three consecutive runs (HA 2026.10.4, Python 3.14.10). Not yet exercised against the live HA server.
