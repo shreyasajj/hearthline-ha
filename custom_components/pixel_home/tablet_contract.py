@@ -53,18 +53,18 @@ def telemetry(value, now=None):
         raise ValueError('Charging contradicts battery status')
     return dict(value)
 
-def dashboard(value, states):
+def dashboard(value, states, *, allow_missing=False):
     allowed = {'name','area_id','favorites','scenes','players','weather_entity','home_entities','music','idle_seconds','heartbeat_timeout','revoke','journey_endpoint','home_origin','journey_token','journey_traffic'}
     if not isinstance(value, dict) or set(value) - allowed: raise ValueError('Unknown dashboard field')
     result = {'schema_version': 1, 'title': text(value.get('name','Hearthline'),80)}
     for key, domains, limit in [('favorites',FAVORITES,8),('scenes',{'scene'},6),('players',{'media_player'},8),('home_entities',{'light','switch','climate','lock','binary_sensor','sensor'},16)]:
         items = value.get(key, [])
         if not isinstance(items, list) or len(items)>limit or len(set(items))!=len(items): raise ValueError('Invalid selection')
-        if any(not isinstance(x,str) or x.partition('.')[0] not in domains or states.get(x) is None for x in items):
+        if any(not isinstance(x,str) or x.partition('.')[0] not in domains or (not allow_missing and states.get(x) is None) for x in items):
             raise ValueError('Select existing supported entities')
         result[key] = items
     weather = value.get('weather_entity')
-    if weather and (not isinstance(weather,str) or not weather.startswith('weather.') or states.get(weather) is None):
+    if weather and (not isinstance(weather,str) or not weather.startswith('weather.') or (not allow_missing and states.get(weather) is None)):
         raise ValueError('Select existing weather entity')
     result['weather_entity'] = weather
     music=value.get('music',[])

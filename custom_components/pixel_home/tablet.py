@@ -14,7 +14,7 @@ from homeassistant.core import Context, callback
 from homeassistant.helpers.event import async_call_later, async_track_state_change_event, async_track_time_interval
 from homeassistant.helpers.json import json_dumps
 from homeassistant.helpers.dispatcher import async_dispatcher_send
-from .tablet_contract import dashboard, TelemetryState, UUID
+from .tablet_contract import dashboard, TelemetryState, UUID, FAVORITES
 from .bridge import Bridge
 from .providers import TemplateProviders
 
@@ -93,7 +93,9 @@ class Tablet:
 async def setup_tablet(hass,entry):
     tablet=Tablet(hass,entry)
     hass.data.setdefault('pixel_home_tablets',{})[entry.entry_id]=tablet
-    entry.async_on_unload(async_track_time_interval(hass,lambda now: tablet.notify(),timedelta(seconds=15)))
+    @callback
+    def heartbeat(now): tablet.notify()
+    entry.async_on_unload(async_track_time_interval(hass,heartbeat,timedelta(seconds=15)))
     entry.async_on_unload(entry.add_update_listener(updated))
     @callback
     def stopping(event): tablet.close_streams(1001)  # Going away: do not hold the HTTP server open on shutdown.
@@ -209,6 +211,7 @@ class TabletView(HomeAssistantView):
     async def get(self,request,entry_id,operation):
         tablet,user=await self.authenticate(request,entry_id)
         try:
+            if operation=='editor': return self.json(editor_catalog(tablet,user,entry_id,request.query.get('query','')))
             config=dashboard(tablet.definition,tablet.hass.states)
             if operation=='config': return self.json(config_payload(tablet,entry_id,config))
             if operation=='stream': return await stream(request,tablet,user,entry_id,config)
@@ -230,6 +233,21 @@ class TabletView(HomeAssistantView):
         tablet,user=await self.authenticate(request,entry_id)
         body=await bounded_json(request)
         try:
+            if operation=='editor':
+                if not user.is_admin: raise web.HTTPForbidden()
+                if set(body)!={'schema_version','revision','title','favorites','scenes','players'} or type(body['schema_version']) is not int or body['schema_version']!=1: raise ValueError()
+                if body['revision']!=tablet.revision: raise web.HTTPConflict(reason='Dashboard changed; reload before saving')
+                definition={**tablet.definition,'name':body['title'],**{key:body[key] for key in ('favorites','scenes','players')}}
+                config=dashboard(definition,tablet.hass.states)
+                for entity in config['favorites']+config['scenes']+config['players']:
+                    if not user.permissions.check_entity(entity,POLICY_READ) or not user.permissions.check_entity(entity,POLICY_CONTROL): raise web.HTTPForbidden()
+                # Apply this narrow edit in place: a full entry reload briefly removes the
+                # credential endpoint and can incorrectly look like revocation to the tablet.
+                tablet.loaded_options=dict(definition)
+                tablet.hass.config_entries.async_update_entry(tablet.entry,options=definition)
+                tablet.providers.options=definition
+                tablet.close_streams(); tablet.notify()
+                return self.json(config_payload(tablet,entry_id,config))
             if operation=='session':
                 if body!={}: raise ValueError()
                 session=str(uuid.uuid4()); tablet.telemetry.begin(session); tablet.notify()
@@ -249,6 +267,22 @@ class TabletView(HomeAssistantView):
                 return self.json({'accepted':True})
         except (ValueError,TypeError,KeyError): raise web.HTTPBadRequest(reason='Invalid tablet request') from None
         raise web.HTTPNotFound()
+
+def editor_catalog(tablet,user,entry_id,query):
+    """Bounded entity discovery for the paired administrator's own tablet dashboard."""
+    if not user.is_admin: raise web.HTTPForbidden()
+    if not isinstance(query,str) or len(query)>80 or any(ord(c)<32 for c in query): raise ValueError()
+    query=query.casefold().strip()
+    choices=[]
+    for state in tablet.hass.states.async_all():
+        if state.domain not in FAVORITES|{'scene','media_player'}: continue
+        if not user.permissions.check_entity(state.entity_id,POLICY_READ) or not user.permissions.check_entity(state.entity_id,POLICY_CONTROL): continue
+        name=str(state.attributes.get('friendly_name',state.entity_id))[:160]
+        if query and query not in (state.entity_id+' '+name).casefold(): continue
+        choices.append({'entity_id':state.entity_id,'name':name,'state':state.state[:80]})
+    choices.sort(key=lambda item:(item['name'].casefold(),item['entity_id']))
+    return {'schema_version':1,'config':config_payload(tablet,entry_id,dashboard(tablet.definition,tablet.hass.states,allow_missing=True)),
+            'choices':choices[:200],'truncated':len(choices)>200}
 
 def config_payload(tablet,entry_id,config):
     return {'schema_version':1,'revision':tablet.revision,'display_id':tablet.bridge.display_id,'entry_id':entry_id,'dashboard':config,'capabilities':{'telemetry':1,'display_protocols':['1.0','1.1'],'remote_configuration':False}}

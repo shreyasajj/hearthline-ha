@@ -39,3 +39,8 @@ Not yet exercised: the tablet holding the stream against a live HA server over A
 ## 0.7.5 — pairing with a code
 
 `tests/test_pair_code.py` adds six cases using HA's real HTTP flow API, as the frontend drives it: the code pairs once as the administrator who opened the form; the credential works and the code cannot be reused after unpair; a discovered entry rejects another installation ID (403) and spends the code; expired and malformed codes (letters, bad UUID, missing or extra fields, boolean schema) are refused; 10 wrong guesses withdraw every open code and return 429; a flow with no administrator request issues no code; a code from a since-deactivated administrator is refused. The options test now goes through the new menu. **72 pytest cases pass**, three consecutive runs (HA 2026.10.4, Python 3.14.10). Not yet exercised against the live HA server.
+
+
+## Tablet Home editor — integration 0.7.6
+
+All 88 real HA pytest cases pass on HA 2026.10.4 / Python 3.14, alongside 45 provider/display tool tests. Editor tests cover administrator ownership, scoped credentials, read/control filtering, 200-choice search bounds, optimistic revision conflicts, invalid/unsupported/deleted selections, empty players, cross-tablet isolation, preserved private provider settings, and stream filter refresh after saving. Dashboard edits apply without unloading the credential endpoint. The heartbeat callback is marked as an event-loop callback to avoid HA thread-safety errors. This update has not been deployed to the live HA server.
